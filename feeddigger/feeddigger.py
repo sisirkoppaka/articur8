@@ -1,9 +1,13 @@
 # by SK and AM
 
+import nltk
+import re
+from urllib2 import urlopen
 import opml
 import feedparser
 import boto
 import simplejson
+from time import mktime
 from datetime import datetime, date, time, timedelta
 from xml.etree.ElementTree import Element, SubElement, Comment
 from xml.dom import minidom
@@ -26,13 +30,25 @@ class RSSObj: # object to store the rss feeds
         
 
 class OutlineObj: # object which we store for each entry
-    def __init__(self, title = None, link = None, content = None, author = None):
+    def __init__(self, title = None, link = None, author = None):
 
         self.title = "None" if title == None else title
         self.link = "None" if link == None else link
-        self.content = "None" if content == None else content
         self.author = "None" if author == None else author
-        
+
+        if link == None:
+            cleaned = "None"
+        else: # get the content by parsing the link
+            try:
+                html = urlopen(link).read()
+                raw = nltk.clean_html(html)
+                cleaned = " ".join(re.split(r'[\n\r\t ]+', raw))
+                cleaned = unicode(cleaned, "utf-8") # TO DO : fix this
+            except:
+                cleaned = "None"
+            
+        self.content = cleaned
+        self.updatedAt = ""
 
 def putCloud(type, name):
     c = S3Connection(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
@@ -100,8 +116,11 @@ def getEntryContent(entry): # gets whatever field information is present in entr
     #print "author = ", author
     #dummy = raw_input()
 
-    outline = OutlineObj(title, link , content, author) # create the outline object
+    outline = OutlineObj(title, link, author) # create the outline object
 
+    updatedAt = entry.updated_parsed if hasattr(entry, 'updated_parsed') else "None"
+    outline.updatedAt = updatedAt
+    
     return outline
 
 def genSnapshot(endTime):
@@ -127,7 +146,7 @@ def genSnapshot(endTime):
     head = SubElement(root, 'head')
 
     title = SubElement(head, 'title')
-    title.text = 'grep last '+endTime+' minutes '+stringID
+    title.text = 'grep last '+str(endTime)+' minutes '+stringID
     
     dc = SubElement(head, 'dateCreated')
     dc.text = str(generated_on)
@@ -142,9 +161,9 @@ def genSnapshot(endTime):
     num_added = 0
 
     # get entries from each of the rss sources
-    for item in rss_sources:
+    for source in rss_sources:
         try:
-            d = feedparser.parse(item.xmlUrl) # parse from rss source
+            d = feedparser.parse(source.xmlUrl) # parse from rss source
             try:               
                 logger.info("Parsed "+d.feed.title)                  
                 for entry in d.entries:
@@ -156,7 +175,35 @@ def genSnapshot(endTime):
                         print num_added
 
                         outline = getEntryContent(entry)
-                        entry = SubElement(body, 'outline', {'content':outline.content, 'title':outline.title, 'link':outline.link, 'author':outline.author, 'feed_title':d.feed.title, 'updated_at':str(datetime(*entry.updated_parsed[:6]))})
+
+                        # create xml entry
+                        item = SubElement(body, 'item')
+
+                        # create xml title
+                        title = SubElement(item, 'title')
+                        title.text = outline.title
+
+                        # create xml feed title
+                        feedTitle = SubElement(item, 'feed_title')
+                        feedTitle.text = d.feed.title
+
+                        # create xml link
+                        link = SubElement(item, 'link')
+                        link.text = outline.link
+
+                        # create xml author
+                        author = SubElement(item, 'author')
+                        author.text = outline.author
+
+                        # create xml content
+                        content = SubElement(item, 'content')
+                        content.text = outline.content
+
+                        # create xml timestamp
+                        UpdatedAt = SubElement(item, 'updated_at')
+                        UpdatedAt.text = str(datetime.fromtimestamp(mktime(outline.updatedAt)))
+                        
+                        
 
             except TypeError:
                     pass   
@@ -180,6 +227,6 @@ if __name__ == "__main__":
     LOG_FILENAME_INFO = 'feeddigger_info.log'
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
 
-    endTime = 120 # below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
+    endTime = 10 # below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
 
     genSnapshot(endTime)
