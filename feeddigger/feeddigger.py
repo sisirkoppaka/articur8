@@ -127,7 +127,7 @@ def genSnapshot(endTime):
     head = SubElement(root, 'head')
 
     title = SubElement(head, 'title')
-    title.text = 'grep last 5 minutes '+stringID
+    title.text = 'grep last '+endTime+' minutes '+stringID
     
     dc = SubElement(head, 'dateCreated')
     dc.text = str(generated_on)
