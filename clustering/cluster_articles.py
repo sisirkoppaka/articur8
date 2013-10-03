@@ -7,6 +7,7 @@ from nltk.cluster import euclidean_distance, cosine_distance
 
 import loader
 import vectorer
+import motherlode
 
 # TO DO:
 # 1) Give more weight to Nouns
