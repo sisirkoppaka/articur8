@@ -94,7 +94,7 @@ def cluster_kmeans(vectors, num_clusters, distance_metric):
     elif distance_metric == "cosine":
         clusterer = cluster.KMeansClusterer(num_clusters, cosine_distance)
 
-    assignment = clusterer.cluster(vectors, False)
+    assignment = clusterer.cluster(vectors, True)
     
     end_time = time.time()
     print "Clustering required", (end_time-start_time),"seconds"
@@ -167,12 +167,14 @@ if __name__ == "__main__":
     vectors = full_vectors
 
     # cluster the articles
-    num_clusters = 10
+    num_clusters = 4
 
     assignment = cluster_articles(vectors, num_clusters, 'gaac')
+    print assignment
     #print_cluster_means(cluster_means, unique_tokens)
 
     assignment = cluster_articles(vectors, num_clusters, 'kmeans')
+    print assignment
     #print_cluster_means(cluster_means, unique_tokens)
 
 
