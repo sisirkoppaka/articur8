@@ -16,9 +16,11 @@ import logging
 import os
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
+import requests
 
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
+SERVER_URL = "http://localhost:9999/"
 
 
 class RSSObj: # object to store the rss feeds
@@ -59,6 +61,10 @@ def putCloud(type, name):
     k.key=type+'/'+"latest.opml"
     k.set_contents_from_filename(name)
     return
+
+def storeDeltaDump(timestamp,deltadump):
+    payload = {'timestamp':timestamp,'deltadump':deltadump}
+    r = requests.post(SERVER_URL+"dumps/delta/",data=payload)
 
 def prettify(element):
     rough_string = ElementTree.tostring(element, 'utf-8')
