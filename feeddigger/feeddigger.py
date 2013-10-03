@@ -46,6 +46,7 @@ class OutlineObj: # object which we store for each entry
                 raw = nltk.clean_html(html)
                 cleaned = " ".join(re.split(r'[\n\r\t ]+', raw))
                 cleaned = unicode(cleaned, "utf-8") # TO DO : fix this
+                cleaned.replace("&", "")
             except:
                 cleaned = "None"
             
