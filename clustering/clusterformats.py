@@ -2,8 +2,10 @@
 
 import itertools
 import simplejson as json
+import motherlode
 
 def clustersToJSON(articles, assignments):
+	tag = "kmeans"
 	clusters = list(set(assignments))
 
 	clustersForHumans = []
@@ -19,10 +21,7 @@ def clustersToJSON(articles, assignments):
 
 		clustersForHumans.append({'cluster': i,'articles':articlesInCluster})
 
-	return json.dumps(clustersForHumans)
-
-def hello():
-	print "hello"
+	motherlode.storeCluster(json.dumps(clustersForHumans),tag)
 
 #if __name__ == "__main__":
 #	hello()

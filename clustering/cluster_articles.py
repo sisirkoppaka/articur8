@@ -178,10 +178,9 @@ if __name__ == "__main__":
     print assignment
     #print_cluster_means(cluster_means, unique_tokens)
 
-    #Check this
-    clusterformats.hello()
-    json_assignment = clusterformats.clustersToJSON(articles,assignment)
-    print json_assignment
+    #Stores a copy of the cluster in JSON in the motherlode
+    clusterformats.clustersToJSON(articles,assignment)
+
 
 
 
