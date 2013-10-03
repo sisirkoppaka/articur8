@@ -12,9 +12,12 @@ def clustersToJSON(articles, assignments):
 		articlesInCluster = []
 		for j, cluster in enumerate(assignments):
 			if cluster == i:
-				articlesInCluster.append({'title':articles[j].title, 'feed_title':articles[j].feed_title, 'link':articles[j].link, 'author':articles[j].author, 'content':articles[j].content, 'updated_at':articles[j].updated_at})
+				#With Content
+				#articlesInCluster.append({'title':articles[j].title, 'feed_title':articles[j].feed_title, 'link':articles[j].link, 'author':articles[j].author, 'content':articles[j].content, 'updated_at':articles[j].updated_at})
+				#And Without
+				articlesInCluster.append({'title':articles[j].title, 'feed_title':articles[j].feed_title, 'link':articles[j].link, 'author':articles[j].author, 'updated_at':articles[j].updated_at})
 
-		clustersForHumans.append({'cluster': i,'articles':articlesInCluster[0]})
+		clustersForHumans.append({'cluster': i,'articles':articlesInCluster})
 
 	return json.dumps(clustersForHumans)
 
