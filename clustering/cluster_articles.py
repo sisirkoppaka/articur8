@@ -10,6 +10,7 @@ import fastcluster
 import loader
 import vectorer
 import motherlode
+import clusterformats
 
 # TO DO:
 # 1) Give more weight to Nouns
@@ -176,6 +177,13 @@ if __name__ == "__main__":
     assignment = cluster_articles(vectors, num_clusters, 'kmeans')
     print assignment
     #print_cluster_means(cluster_means, unique_tokens)
+
+    #Check this
+    hello()
+    json_assignment = clustersToJSON(articles,assignment)
+    print json_assignment
+
+
 
 
 
