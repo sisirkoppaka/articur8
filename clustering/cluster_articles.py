@@ -139,16 +139,14 @@ def cluster_articles(articles, num_clusters, method):
     
 if __name__ == "__main__":
 
-    file_name = "../feeddumps/201309282106.opml"
-
     # get articles from wherever
-    articles = loader.load_xml_data(file_name)
+    articles = loader.get_latest_dump()
 
     articles = articles[:200]
 
     # cluster the articles
     num_clusters = 10
-    clusters = cluster_articles(articles, num_clusters, 'gaac')
+    #clusters = cluster_articles(articles, num_clusters, 'gaac')
     clusters = cluster_articles(articles, num_clusters, 'kmeans')
 
 
