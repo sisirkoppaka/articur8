@@ -76,7 +76,30 @@ def cleanify_article(article): # converts article to tokens
 
     return tokens
 
-def vectorize_articles(articles): # given a list of articles, converts to the tf-idf vector space
+def truncated_SVD_vector(vectors, reduced_dim): # transforms input vectors to lower dimensions using SVD of reduced dim
+
+    U, S, V = numpy.linalg.svd(vectors, full_matrices=False)
+
+    print U.shape, S.shape, V.shape
+
+    newU = U[:, :reduced_dim]
+    newS = S[:reduced_dim]
+    newV = V[:reduced_dim, :]
+
+    print newU.shape, newS.shape, newV.shape
+
+    diagS = numpy.zeros((reduced_dim, reduced_dim))
+    diagS[:, :] = numpy.diag(newS)
+
+    truncated_vectors = numpy.dot(newU, numpy.dot(diagS, newV))
+
+    print numpy.allclose(vectors, truncated_vectors)
+                               
+    dummy = raw_input()
+    
+    return truncated_vectors
+
+def vectorize_articles(articles, truncate = False): # given a list of articles, converts to the tf-idf vector space
 
     global unique_tokens
     global unique_tokens_dict
@@ -146,5 +169,9 @@ def vectorize_articles(articles): # given a list of articles, converts to the tf
         print count
         vectors.append(numpy.array(tfidf(text)))
     print "Vectors created\n"
-  
+
     return IDF, unique_tokens_dict, unique_tokens, vectors
+
+
+
+        

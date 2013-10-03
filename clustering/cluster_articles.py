@@ -4,6 +4,8 @@ import time
 
 from nltk import cluster
 from nltk.cluster import euclidean_distance, cosine_distance
+from scipy import spatial
+import fastcluster
 
 import loader
 import vectorer
@@ -93,12 +95,11 @@ def cluster_kmeans(vectors, num_clusters, distance_metric):
         clusterer = cluster.KMeansClusterer(num_clusters, cosine_distance)
 
     assignment = clusterer.cluster(vectors, False)
-    cluster_means = clusterer.means()
-
+    
     end_time = time.time()
     print "Clustering required", (end_time-start_time),"seconds"
 
-    return assignment, cluster_means
+    return assignment
 
 
 def cluster_gaac(vectors, num_clusters):
@@ -107,35 +108,47 @@ def cluster_gaac(vectors, num_clusters):
     
     start_time = time.time()
 
-    # nltk implementation might not be that good
-    clusterer = cluster.GAAClusterer(num_clusters)
-    assignment = clusterer.cluster(vectors, True)
+##    # nltk implementation might not be that good
+##    clusterer = cluster.GAAClusterer(num_clusters)
+##    assignment = clusterer.cluster(vectors, True)
 
-    # get cluster means from assignment
-    cluster_means = cluster_means_from_assignment(vectors, assignment)
+    distance = spatial.distance.pdist(vectors, 'cosine')
+
+    linkage = fastcluster.linkage(distance,method="complete")
+
+    clustdict = {i:[i] for i in xrange(len(linkage)+1)}
+    for i in xrange(len(linkage)-num_clusters+1):
+        clust1= int(linkage[i][0])
+        clust2= int(linkage[i][1])
+        clustdict[max(clustdict)+1] = clustdict[clust1] + clustdict[clust2]
+        del clustdict[clust1], clustdict[clust2]
+
+    # generate the assignment list (vector -> cluster id)
+    assignment = [-1]*len(vectors)
+
+    count = 0
+    for key in clustdict:
+        value = clustdict[key]
+        for item in value:
+            assignment[item] = count
+        count = count + 1
 
     end_time = time.time()
     print "Clustering required", (end_time-start_time),"seconds"
 
-    return assignment, cluster_means
+    return assignment
     
-def cluster_articles(articles, num_clusters, method):
-
-    # convert articles to tf-idf vectors
-    IDF, unique_tokens_dict, unique_tokens, vectors = vectorer.vectorize_articles(articles)
+def cluster_articles(vectors, num_clusters, method):
 
     # cluster the article vectors
     if method == 'kmeans':
-        assignment, cluster_means = cluster_kmeans(vectors, num_clusters, "cosine");
-        print_cluster_means(cluster_means, unique_tokens)
+        assignment = cluster_kmeans(vectors, num_clusters, "cosine");
     elif method == 'gaac':
-        assignment, cluster_means = cluster_gaac(vectors, num_clusters)
-        print_cluster_means(cluster_means, unique_tokens)
+        assignment = cluster_gaac(vectors, num_clusters)
     elif method == 'nmf':
         cluster_nmf(vectors, num_clusters)
 
-
-    return None
+    return assignment
     
 if __name__ == "__main__":
 
@@ -143,13 +156,22 @@ if __name__ == "__main__":
     articles = loader.get_latest_dump()
 
     articles = articles[:200]
+	
+    # convert articles to tf-idf vectors
+    IDF, unique_tokens_dict, unique_tokens, full_vectors = vectorer.vectorize_articles(articles)
+
+    # reduce dimension of vectors
+    #reduced_dim = 100
+    #truncated_vectors = vectorer.truncated_SVD_vector(full_vectors, reduced_dim)
 
     # cluster the articles
     num_clusters = 10
-    #clusters = cluster_articles(articles, num_clusters, 'gaac')
-    clusters = cluster_articles(articles, num_clusters, 'kmeans')
 
+    assignment = cluster_articles(vectors, num_clusters, 'gaac')
+    #print_cluster_means(cluster_means, unique_tokens)
 
+    assignment = cluster_articles(vectors, num_clusters, 'kmeans')
+    #print_cluster_means(cluster_means, unique_tokens)
 
 
 
