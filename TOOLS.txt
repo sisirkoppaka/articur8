@@ -1,0 +1,3 @@
+Use virtualenv.
+http://www.lowindata.com/2013/installing-scientific-python-on-mac-os-x/
+
