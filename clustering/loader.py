@@ -1,6 +1,7 @@
 """Contains methods for loading articles from different sources"""
 
 from xml.dom.minidom import parse, parseString
+import motherlode
 
 class NewsItem: # class for each news item
 
@@ -16,15 +17,11 @@ class NewsItem: # class for each news item
         self.updated_at = updated_at
         self.id = self.identifier
         self.identifier = self.identifier + 1
-        
-
-def load_xml_data(file_name): # loads the opml file
-
-    print "Loading articles from xml file: ", file_name
-
-    dom = parse(file_name) # parse an XML file by name
-
-    itemlist = dom.getElementsByTagName('item') # get the items
+    
+    
+def get_items(dom):
+	
+	itemlist = dom.getElementsByTagName('item') # get the items
 
     items = []
 
@@ -47,3 +44,23 @@ def load_xml_data(file_name): # loads the opml file
     print "Finished loading ", len(items), " articles\n"
 
     return items
+		
+		
+def get_latest_dump():
+
+	xml_content = motherlode.getLatestDeltaDump() # get from redis
+
+	dom = parseString(xml_content) # parse xml string
+
+	items = get_items(dom)
+		
+	return items	
+		
+def load_xml_data(file_name): # loads the opml file
+
+    dom = parse(file_name) # parse an XML file by name
+
+	items = get_items(dom)
+		
+	return items	
+    
