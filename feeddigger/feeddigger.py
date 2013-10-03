@@ -219,9 +219,10 @@ def genSnapshot(endTime):
                 pass
 
     # output data to file
-    fout = open('../feeddumps/'+stringID+".opml",'w')
-    fout.write((prettify(root)).encode('utf-8'))
-    fout.close()
+    #fout = open('../feeddumps/'+stringID+".opml",'w')
+    #fout.write((prettify(root)).encode('utf-8'))
+    #fout.close()
+    storeDeltaDump(stringID,(prettify(root)).encode('utf-8'))
 
     #putCloud("river",stringID+".opml")
     #os.remove(stringID+".opml")
@@ -232,6 +233,6 @@ if __name__ == "__main__":
     LOG_FILENAME_INFO = 'feeddigger_info.log'
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
 
-    endTime = 3600# below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
+    endTime = 60# below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
 
     genSnapshot(endTime)
