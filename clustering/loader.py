@@ -21,7 +21,7 @@ class NewsItem: # class for each news item
     
 def get_items(dom):
 	
-	itemlist = dom.getElementsByTagName('item') # get the items
+    itemlist = dom.getElementsByTagName('item') # get the items
 
     items = []
 
@@ -48,19 +48,19 @@ def get_items(dom):
 		
 def get_latest_dump():
 
-	xml_content = motherlode.getLatestDeltaDump() # get from redis
+    xml_content = motherlode.getLatestDeltaDump() # get from redis
 
-	dom = parseString(xml_content) # parse xml string
+    dom = parseString(xml_content) # parse xml string
 
-	items = get_items(dom)
-		
-	return items	
+    items = get_items(dom)
+            
+    return items	
 		
 def load_xml_data(file_name): # loads the opml file
 
     dom = parse(file_name) # parse an XML file by name
 
-	items = get_items(dom)
-		
-	return items	
+    items = get_items(dom)
+            
+    return items	
     
