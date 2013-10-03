@@ -1,3 +1,6 @@
+Install JSONView https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc?hl=en
+in Chrome 
+
 Use virtualenv.
 http://www.lowindata.com/2013/installing-scientific-python-on-mac-os-x/
 

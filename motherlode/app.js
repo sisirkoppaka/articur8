@@ -46,5 +46,25 @@ app.post('/dumps/delta/',function(req,res) {
 	res.json(true);
 });
 
+app.post('/clusters/latest/',function(req,res) {
+	if(!req.body.hasOwnProperty('clusterInJSON') || 
+ 	   !req.body.hasOwnProperty('tag')) {
+		res.statusCode = 400;
+		return res.send('Error 400: Latest Cluster Saving API incorrect.');
+	}
+	client.set("clusters:latest",req.body.clusterInJSON);
+	res.json(true);
+});
+
+//GET /clusters/latest
+app.get('/clusters/latest/',function(req,res) {
+	client.get("clusters:latest",function(err,value){
+		res.type('application/json');
+		console.log(value);
+		res.send(value);
+	});
+});
+
+
 app.listen(process.env.PORT || 9999);
 
