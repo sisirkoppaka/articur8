@@ -164,6 +164,8 @@ if __name__ == "__main__":
     #reduced_dim = 100
     #truncated_vectors = vectorer.truncated_SVD_vector(full_vectors, reduced_dim)
 
+    vectors = full_vectors
+
     # cluster the articles
     num_clusters = 10
 
