@@ -26,11 +26,18 @@ def tfidf(document): # creates the tf-idf vector using the global 'unique_tokens
     # our tfidf vector, initialized to zero
     word_tfidf = [0]*len(unique_tokens_dict) 
 
+    # euclidean norm to divide by
+    euclidean_norm = 0
+  
     # populate vector
     for word in unique_text: 
         index = unique_tokens_dict[word]
         word_tfidf[index] = tf(word, document, 'log') * IDF[word]
-              
+        euclidean_norm = euclidean_norm + word_tfidf[index]*word_tfidf[index]        
+      
+    # normalize the tfidf vector
+    word_tfidf = [item / math.sqrt(euclidean_norm) for item in word_tfidf]
+
     return word_tfidf
 
 

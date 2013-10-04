@@ -5,7 +5,9 @@ import time
 from nltk import cluster
 from nltk.cluster import euclidean_distance, cosine_distance
 from scipy import spatial
+from scipy.sparse import csr_matrix
 import fastcluster
+import nimfa
 
 import loader
 import vectorer
@@ -54,33 +56,40 @@ def cluster_means_from_assignment(vectors, assignment):
 def cluster_nmf(vectors, rank):
 
     print "Starting NMF clustering"
-    
+ 
     start_time = time.time()
     
-    # Generate random matrix factors which we will pass as fixed factors to Nimfa.
-    rank = 5
-    init_W = np.random.rand(len(vectors), rank)
-    init_H = np.random.rand(rank, len(vectors[0]))
-
     # Run NMF.
-    # We don't specify any algorithm parameters. Defaults will be used.
-    # We specify fixed initialization method and pass matrix factors.
-    fctr = nimfa.mf(vectors, method = "nmf", seed = "fixed", W = init_W, H = init_H, rank = rank)
+    # Change this later and see which is best
+    vectors_matrix = numpy.matrix(vectors)
+    vectors_matrix = vectors_matrix.transpose()
+    
+    # Generate random matrix factors which we will pass as fixed factors to Nimfa.
+    init_W = numpy.random.rand(vectors_matrix.shape[0], rank)
+    init_H = numpy.random.rand(rank, vectors_matrix.shape[1])
+
+    fctr = nimfa.mf(vectors_matrix, method = "nmf", seed = "fixed", W = init_W, H = init_H, rank = rank)
     fctr_res = nimfa.mf_run(fctr)
+
+    # Basis matrix
+    W = fctr_res.basis()
+
+    # Mixture matrix
+    H = fctr_res.coef()
+
+    # get assignments
+    assignment = []
+    for index in range(H.shape[1]):
+        column = list(H[:, index])
+        assignment.append(column.index(max(column)))
 
     # Print the loss function (Euclidean distance between target matrix and its estimate). 
     print "Euclidean distance: %5.3e" % fctr_res.distance(metric = "euclidean")
 
-    # It should print 'fixed'.
-    print fctr_res.seeding
-
-    # By default, max 30 iterations are performed.
-    print fctr_res.n_iter
-
     end_time = time.time()
     print "Clustering required", (end_time-start_time),"seconds"
-    
-    print "done"
+
+    return assignment
 
 
 def cluster_kmeans(vectors, num_clusters, distance_metric):
@@ -147,7 +156,7 @@ def cluster_articles(vectors, num_clusters, method):
     elif method == 'gaac':
         assignment = cluster_gaac(vectors, num_clusters)
     elif method == 'nmf':
-        cluster_nmf(vectors, num_clusters)
+        assignment = cluster_nmf(vectors, num_clusters)
 
     return assignment
     
@@ -156,7 +165,7 @@ if __name__ == "__main__":
     # get articles from wherever
     articles = loader.get_latest_dump()
 
-    articles = articles[:200]
+    #articles = articles[:200]
 	
     # convert articles to tf-idf vectors
     IDF, unique_tokens_dict, unique_tokens, full_vectors = vectorer.vectorize_articles(articles)
@@ -168,15 +177,18 @@ if __name__ == "__main__":
     vectors = full_vectors
 
     # cluster the articles
-    num_clusters = 4
+    num_clusters = 10
 
-    assignment = cluster_articles(vectors, num_clusters, 'gaac')
-    print assignment
+    #assignment = cluster_articles(vectors, num_clusters, 'gaac')
+    #print assignment
     #print_cluster_means(cluster_means, unique_tokens)
 
-    assignment = cluster_articles(vectors, num_clusters, 'kmeans')
-    print assignment
+    #assignment = cluster_articles(vectors, num_clusters, 'kmeans')
+    #print assignment
     #print_cluster_means(cluster_means, unique_tokens)
+
+    assignment = cluster_articles(vectors, num_clusters, 'nmf')
+    #print assignment
 
     #Stores a copy of the cluster in JSON in the motherlode
     clusterformats.clustersToJSON(articles,assignment)

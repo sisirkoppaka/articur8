@@ -234,6 +234,6 @@ if __name__ == "__main__":
     LOG_FILENAME_INFO = 'feeddigger_info.log'
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
 
-    endTime = 60# below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
+    endTime = 1440# below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
 
     genSnapshot(endTime)
