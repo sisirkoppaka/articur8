@@ -2,7 +2,7 @@
 
 import nltk
 import re
-from urllib2 import urlopen
+import urllib2
 import opml
 import feedparser
 import boto
@@ -17,6 +17,7 @@ import os
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import requests
+from urlparse import urlparse,urlunparse
 
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
@@ -42,7 +43,9 @@ class OutlineObj: # object which we store for each entry
             cleaned = "None"
         else: # get the content by parsing the link
             try:
-                html = urlopen(link).read()
+                link_connect = urllib2.urlopen(link)
+                self.link = clean_link(link_connect)
+                html = link_connect.read()
                 raw = nltk.clean_html(html)
                 cleaned = " ".join(re.split(r'[\n\r\t ]+', raw))
                 cleaned = unicode(cleaned, "utf-8") # TO DO : fix this
@@ -62,6 +65,24 @@ def putCloud(type, name):
     k.key=type+'/'+"latest.opml"
     k.set_contents_from_filename(name)
     return
+
+#TODO Avoid double urlopen of link here and in Outline later
+def clean_link(link_connect):
+    #Clean link
+    #Starting with eliminating redirects
+    link = link_connect.geturl()
+    #And dropping params, queries and fragments
+    link_parsed = urlparse(link)
+    core_link_parsed = (link_parsed.scheme,link_parsed.netloc,link_parsed.path,'','','')
+    link = urlunparse(core_link_parsed)
+    return link
+
+def clean_link_only_redirects(link):
+    #Clean link
+    #Starting with eliminating redirects
+    l = urllib2.urlopen(link)
+    link = l.geturl()
+    return link
 
 def storeDeltaDump(timestamp,deltadump):
     payload = {'timestamp':timestamp,'deltadump':deltadump}
@@ -234,6 +255,6 @@ if __name__ == "__main__":
     LOG_FILENAME_INFO = 'feeddigger_info.log'
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
 
-    endTime = 1440# below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
+    endTime = 120# below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
 
     genSnapshot(endTime)
