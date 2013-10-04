@@ -60,7 +60,7 @@ class OutlineObj: # object which we store for each entry
                 cleaned = "None"
         
         #print "Length of cleaned HTML",len(cleaned)
-        print cleaned    
+        #print cleaned    
         self.content = cleaned
         self.updatedAt = ""
 
