@@ -18,6 +18,7 @@ from boto.s3.connection import S3Connection
 from boto.s3.key import Key
 import requests
 from urlparse import urlparse,urlunparse
+from readability.readability import Document
 
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
@@ -46,13 +47,20 @@ class OutlineObj: # object which we store for each entry
                 link_connect = urllib2.urlopen(link)
                 self.link = clean_link(link_connect)
                 html = link_connect.read()
-                raw = nltk.clean_html(html)
+                try:
+                    raw = nltk.clean_html(Document(html).summary())
+                except:
+                    raw = nltk.clean_html(html)
                 cleaned = " ".join(re.split(r'[\n\r\t ]+', raw))
-                cleaned = unicode(cleaned, "utf-8") # TO DO : fix this
+                #The following unicode line raises exceptions sometimes. 
+                #The lack of a fix for now is causing some articles to not have any content
+                #cleaned = unicode(cleaned, "utf-8") # TO DO : fix this
                 cleaned.replace("&", "")
             except:
                 cleaned = "None"
-            
+        
+        #print "Length of cleaned HTML",len(cleaned)
+        print cleaned    
         self.content = cleaned
         self.updatedAt = ""
 
