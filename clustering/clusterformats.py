@@ -10,6 +10,11 @@ def clustersToJSON(articles, assignments, insertContent):
 
 	clustersForHumans = []
 
+	if insertContent:
+		print "Inserting content into ClusterInJSON"
+	else:
+		print "Not inserting content into ClusterInJSON"
+
 	for i in clusters:
 		articlesInCluster = []
 		for j, cluster in enumerate(assignments):

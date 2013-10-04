@@ -190,7 +190,7 @@ if __name__ == "__main__":
     assignment = cluster_articles(vectors, num_clusters, 'nmf')
     #print assignment
 
-    #Stores a copy of the cluster in JSON in the motherlode
+    #Stores a copy of the cluster in JSON in the motherlode, with or without content
     clusterformats.clustersToJSON(articles, assignment, True)
 
 
