@@ -191,7 +191,7 @@ if __name__ == "__main__":
     #print assignment
 
     #Stores a copy of the cluster in JSON in the motherlode
-    clusterformats.clustersToJSON(articles,assignment)
+    clusterformats.clustersToJSON(articles, assignment, True)
 
 
 
