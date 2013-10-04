@@ -2,6 +2,7 @@
 
 from xml.dom.minidom import parse, parseString
 import urllib2
+from urlparse import urlparse,urlunparse
 import motherlode
 #from urlparse import urlparse, urlunparse
 
@@ -32,6 +33,18 @@ def clean_link(link):
     link = urlunparse(core_link_parsed)
     return link
 
+def clean_link_only_redirects(link):
+    #Clean link
+    #Starting with eliminating redirects
+    #l = urllib2.urlopen(link)
+    #link = l.geturl()
+    #And dropping params, queries and fragments
+    link_parsed = urlparse(link)
+    core_link_parsed = (link_parsed.scheme,link_parsed.netloc,link_parsed.path,'','','')
+    link = urlunparse(core_link_parsed)
+    return link
+
+
 def get_items(dom):
 	
     itemlist = dom.getElementsByTagName('item') # get the items
@@ -49,9 +62,6 @@ def get_items(dom):
             content    =  item.getElementsByTagName('content')[0].firstChild.nodeValue
             updated_at =  item.getElementsByTagName('updated_at')[0].firstChild.nodeValue
 
-            #Clean link
-            link = clean_link(link)
-            
             items.append(NewsItem(title, feed_title, link, author, content, updated_at))
 
         except:
