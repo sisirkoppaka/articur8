@@ -4,6 +4,8 @@ import itertools
 import simplejson as json
 from articulate.pymotherlode.api import *
 
+from articulate.utils.config import *
+
 def getLede(content):
 	#ledeRE = re.compile('^(.*?(?<!\b\w)[.?!])\s+[A-Z0-9]')
 	#ledes = ledeRE.match(content)
@@ -12,11 +14,13 @@ def getLede(content):
 	lede += "..."
 	return lede
 
-def clustersToJSON(articles, assignments, insertContent):
+def clustersToJSON(articles, assignments):
 	tag = "kmeans"
 	clusters = list(set(assignments))
 
 	clustersForHumans = []
+
+	insertContent = config['clusterFormats.insertContent']
 
 	if insertContent:
 		print "Inserting content into ClusterInJSON"

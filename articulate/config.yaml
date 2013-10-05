@@ -1,1 +1,2 @@
 fd.windowSize: 120 #Minutes back into the past that feeds should be dug
+clusterFormats.insertContent: TRUE # Should full content be inserted in the JSON of the Cluster?
