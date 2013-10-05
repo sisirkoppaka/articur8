@@ -2,6 +2,6 @@
 feeddigger_info.log
 *.pyc
 feeddumps/*
-**/node_modules/**/*
+node_modules
 dump.rdb
 *.swp
