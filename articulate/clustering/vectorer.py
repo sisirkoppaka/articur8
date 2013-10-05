@@ -7,7 +7,7 @@ import numpy
 
 IDF = {} # to make script faster
 unique_tokens_dict = {} # unique_token["token"] = id
-unique_tokens = [] # unique_tokens[id] = "token"
+unique_tokens = [] # list of tokens
 
 
 def tf(word, document, method = 'log'): # finds the term frequency of word in document
@@ -18,7 +18,7 @@ def tf(word, document, method = 'log'): # finds the term frequency of word in do
         return document.count(word)
 
 
-def tfidf(document): # creates the tf-idf vector using the global 'unique_tokens_dict'
+def tfidf(document, title, boost_title=False): # creates the tf-idf vector using the global 'unique_tokens_dict'
 
     document = list(document)
     unique_text = set(document) # for iteration to create vector
@@ -33,10 +33,19 @@ def tfidf(document): # creates the tf-idf vector using the global 'unique_tokens
     for word in unique_text: 
         index = unique_tokens_dict[word]
         word_tfidf[index] = tf(word, document, 'log') * IDF[word]
-        euclidean_norm = euclidean_norm + word_tfidf[index]*word_tfidf[index]        
+            
+    # boost words in title
+    if boost_title == True:
+        for word in title:
+            if word in unique_tokens:
+                index = unique_tokens_dict[word]
+                word_tfidf[index] = word_tfidf[index]*10 
+     
+    # find the euclidean norm of the vector
+    euclidean_norm = math.sqrt(sum([item*item for item in word_tfidf]))
       
     # normalize the tfidf vector
-    word_tfidf = [item / math.sqrt(euclidean_norm) for item in word_tfidf]
+    word_tfidf = [item/euclidean_norm for item in word_tfidf]
 
     return word_tfidf
 
@@ -60,7 +69,7 @@ def extend_stopwords(stopwords): # adds more stopwords as required
     return stopwords
 
 
-def cleanify_article(article): # converts article to tokens 
+def cleanify_text(text): # converts text to tokens 
 
     # our stemmer 
     lmtzr = WordNetLemmatizer() 
@@ -70,7 +79,7 @@ def cleanify_article(article): # converts article to tokens
     stopwords = extend_stopwords(stopwords)
     
     # tokenize article (makes list of words), make everything smallcaps, and lemmatize it (keeps only stems, eg: 'winning' to 'win')        
-    tokens = [lmtzr.lemmatize(w.lower()) for w in nltk.word_tokenize(article.content.encode("utf-8"))]
+    tokens = [lmtzr.lemmatize(w.lower()) for w in nltk.word_tokenize(text.encode("utf-8"))]
 
     # removes tokens that are stopwords
     tokens = [token for token in tokens if token not in stopwords]
@@ -114,8 +123,9 @@ def vectorize_articles(articles, truncate = False): # given a list of articles, 
 
     num_articles = len(articles)
 
-    # collection of all texts
+    # collection of all texts and titles
     texts = [] 
+    titles = []
     
     print "Generating tokens"
     for count, article in enumerate(articles):
@@ -123,7 +133,8 @@ def vectorize_articles(articles, truncate = False): # given a list of articles, 
         print count
         
         # get tokens from article
-        tokens = cleanify_article(article)
+        tokens = cleanify_text(article.content)
+        title = cleanify_text(article.title)
 
         # generate bigrams
         #bi_tokens = nltk.bigrams(tokens)
@@ -143,6 +154,9 @@ def vectorize_articles(articles, truncate = False): # given a list of articles, 
         text = nltk.Text(final_tokens) # create text from article
         texts.append(text) # add to collection of texts
 
+        title = nltk.Text(title)
+        titles.append(title)
+
         # make entry in IDF dictionary
         for token in set(final_tokens):
             if token not in IDF:
@@ -157,7 +171,9 @@ def vectorize_articles(articles, truncate = False): # given a list of articles, 
         IDF[key] = math.log(num_articles/IDF[key])
     print "IDF dictionary ready for use\n"    
     
-    # load the list of texts into a TextCollection object.
+    # load the list of texts and titles into a TextCollection object.
+    #all_text = texts
+    #all_text.extend(titles)
     collection = nltk.TextCollection(texts)
     print "Created a collection of", len(collection), "terms."
 
@@ -172,9 +188,9 @@ def vectorize_articles(articles, truncate = False): # given a list of articles, 
     # And here we actually call the function and create our array of vectors.
     print "Creating vectors"
     vectors = []
-    for count, text in enumerate(texts):
+    for count, item in enumerate(zip(texts, titles)):
         print count
-        vectors.append(numpy.array(tfidf(text)))
+        vectors.append(numpy.array(tfidf(item[0], item[1], boost_title = True)))
     print "Vectors created\n"
 
     return IDF, unique_tokens_dict, unique_tokens, vectors
