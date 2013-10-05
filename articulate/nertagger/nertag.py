@@ -1,11 +1,13 @@
 # coding: utf-8
 import re
-
+import os
 from nltk.tag.stanford import NERTagger
 import time
 
 from articulate.pymotherlode.api import *
 import articulate.utils.loader as loader
+
+import articulate
 
 # global variables
 org_list = []
@@ -17,9 +19,13 @@ def parse_NER(document):
     # split text into sentences
     sentenceEnders = re.compile('[.!?]')
     sentences = sentenceEnders.split(document)
- 
+    
+    #initialize paths
+    englishPath = os.path.join(os.path.join(os.path.dirname(articulate.__file__),'nertagger'),'english.all.3class.distsim.crf.ser.gz')
+    stanfordNERPath = os.path.join(os.path.join(os.path.dirname(articulate.__file__),'nertagger'),'stanford-ner.jar')
+    
     # initialize tagger
-    st = NERTagger('english.all.3class.distsim.crf.ser.gz', 'stanford-ner.jar')
+    st = NERTagger(englishPath, stanfordNERPath)
    
     # tag each sentence
     for sentence in sentences:
