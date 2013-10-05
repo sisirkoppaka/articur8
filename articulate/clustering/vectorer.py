@@ -39,7 +39,7 @@ def tfidf(document, title, boost_title=False): # creates the tf-idf vector using
         for word in title:
             if word in unique_tokens:
                 index = unique_tokens_dict[word]
-                word_tfidf[index] = word_tfidf[index]*10 
+                word_tfidf[index] = word_tfidf[index]*2 
      
     # find the euclidean norm of the vector
     euclidean_norm = math.sqrt(sum([item*item for item in word_tfidf]))
@@ -190,7 +190,7 @@ def vectorize_articles(articles, truncate = False): # given a list of articles, 
     vectors = []
     for count, item in enumerate(zip(texts, titles)):
         print count
-        vectors.append(numpy.array(tfidf(item[0], item[1], boost_title = True)))
+        vectors.append(numpy.array(tfidf(item[0], item[1], boost_title = False)))
     print "Vectors created\n"
 
     return IDF, unique_tokens_dict, unique_tokens, vectors
