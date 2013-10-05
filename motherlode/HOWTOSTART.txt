@@ -1,9 +1,0 @@
-Install Redis.
-
-Run the command 'redis-server'.
-
-Run ./prereq.sh to install prerequisite modules for Motherlode.
-
-Then ./run.sh to start the backend...it will start listening, so move to a new terminal window.
-
-All the best!

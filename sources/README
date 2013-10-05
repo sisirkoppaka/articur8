@@ -1,5 +1,0 @@
-This contains the initial sources.
-
-They will be loaded into REDIS. 
-
-Do not store anything other than initial sources in Git.
