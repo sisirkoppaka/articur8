@@ -20,6 +20,8 @@ import requests
 from urlparse import urlparse,urlunparse
 from readability.readability import Document
 
+from articulate.utils.config import *
+
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
 SERVER_URL = "http://localhost:9999/"
@@ -263,6 +265,6 @@ if __name__ == "__main__":
     LOG_FILENAME_INFO = 'feeddigger_info.log'
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
 
-    endTime = 500# below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
+    endTime = config['fd.windowSize'] # below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
 
     genSnapshot(endTime)
