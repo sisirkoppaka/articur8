@@ -9,8 +9,8 @@ from scipy.sparse import csr_matrix
 import fastcluster
 import nimfa
 from articulate.pymotherlode.api import *
+import articulate.utils.loader as loader
 
-import loader
 import vectorer
 import clusterformats
 
