@@ -19,6 +19,7 @@ def parse_NER(document):
     # split text into sentences
     sentenceEnders = re.compile('[.!?]')
     sentences = sentenceEnders.split(document)
+    total = len(sentences)
     
     #initialize paths
     englishPath = os.path.join(os.path.join(os.path.dirname(articulate.__file__),'nertagger'),'english.all.3class.distsim.crf.ser.gz')
@@ -28,8 +29,11 @@ def parse_NER(document):
     st = NERTagger(englishPath, stanfordNERPath)
    
     # tag each sentence
-    for sentence in sentences:
-        tags = st.tag(sentence.split())
+    for count, sentence in enumerate(sentences):
+
+        print count, "/", total
+
+        tags = st.tag(sentence.encode('utf-8').split())
 
         # add to list of tagged items
         org_list.extend([item[0] for item in tags if item[1] == 'ORGANIZATION'])
@@ -46,7 +50,7 @@ if __name__ == '__main__':
     
     org_list = set(org_list)
     loc_list = set(loc_list)
-    per_list = set(per_lis)
+    per_list = set(per_list)
 
     print "Org :", org_list
     print "Loc :", loc_list
