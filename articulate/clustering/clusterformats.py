@@ -2,7 +2,7 @@
 
 import itertools
 import simplejson as json
-import motherlode
+from articulate.pymotherlode.api import *
 
 def clustersToJSON(articles, assignments, insertContent):
 	tag = "kmeans"
@@ -28,7 +28,7 @@ def clustersToJSON(articles, assignments, insertContent):
 
 		clustersForHumans.append({'cluster': i,'articles':articlesInCluster})
 
-	motherlode.storeCluster(json.dumps(clustersForHumans),tag)
+	storeCluster(json.dumps(clustersForHumans),tag)
 
 #if __name__ == "__main__":
 #	hello()
