@@ -4,6 +4,14 @@ import itertools
 import simplejson as json
 from articulate.pymotherlode.api import *
 
+def getLede(content):
+	#ledeRE = re.compile('^(.*?(?<!\b\w)[.?!])\s+[A-Z0-9]')
+	#ledes = ledeRE.match(content)
+	#return ledes.group(0)
+	lede = content[:50]
+	lede += "..."
+	return lede
+
 def clustersToJSON(articles, assignments, insertContent):
 	tag = "kmeans"
 	clusters = list(set(assignments))
@@ -19,12 +27,19 @@ def clustersToJSON(articles, assignments, insertContent):
 		articlesInCluster = []
 		for j, cluster in enumerate(assignments):
 			if cluster == i:
+				#try:
+				#	lede = getLede(articles[j].content)
+				#except:
+				#	lede = ''
+
+				lede = getLede(articles[j].content)
+
 				if insertContent:
 					#With Content
-					articlesInCluster.append({'title':articles[j].title, 'feed_title':articles[j].feed_title, 'link':articles[j].link, 'author':articles[j].author, 'content':articles[j].content, 'updated_at':articles[j].updated_at})
+					articlesInCluster.append({'title':articles[j].title, 'feed_title':articles[j].feed_title, 'link':articles[j].link, 'author':articles[j].author, 'lede':lede, 'content':articles[j].content, 'updated_at':articles[j].updated_at})
 				else:
 					#And Without
-					articlesInCluster.append({'title':articles[j].title, 'feed_title':articles[j].feed_title, 'link':articles[j].link, 'author':articles[j].author, 'updated_at':articles[j].updated_at})
+					articlesInCluster.append({'title':articles[j].title, 'feed_title':articles[j].feed_title, 'link':articles[j].link, 'author':articles[j].author, 'lede':lede, 'updated_at':articles[j].updated_at})
 
 		clustersForHumans.append({'cluster': i,'articles':articlesInCluster})
 
