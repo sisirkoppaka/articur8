@@ -3,6 +3,7 @@ import re
 import os
 from nltk.tag.stanford import NERTagger
 import time
+import pickle
 
 from articulate.pymotherlode.api import *
 import articulate.utils.loader as loader
@@ -46,15 +47,24 @@ if __name__ == '__main__':
     # get articles from wherever
     articles = loader.get_latest_dump()
         
-    parse_NER(articles[0].content)
+    for count, article in enumerate(articles):
+        print "Article number:", count, "\n"
+        parse_NER(article.content)
     
     org_list = set(org_list)
     loc_list = set(loc_list)
     per_list = set(per_list)
 
-    print "Org :", org_list
-    print "Loc :", loc_list
-    print "Per :", per_list
- 
+    loc_file = open('loc_list.txt', 'w')
+    pickle.dump(loc_list, loc_file)
+    loc_file.close()
 
-  
+    org_file = open('org_list.txt', 'w')
+    pickle.dump(org_list, org_file)
+    org_file.close()
+
+    per_file = open('per_list.txt', 'w')
+    pickle.dump(per_list, per_file)
+    per_file.close()
+
+   
