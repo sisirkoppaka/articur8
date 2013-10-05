@@ -10,7 +10,7 @@ def getLede(content):
 	#ledeRE = re.compile('^(.*?(?<!\b\w)[.?!])\s+[A-Z0-9]')
 	#ledes = ledeRE.match(content)
 	#return ledes.group(0)
-	lede = content[:50]
+	lede = content[:65]
 	lede += "..."
 	return lede
 

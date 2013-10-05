@@ -180,7 +180,7 @@ if __name__ == "__main__":
     # cluster the articles
     num_clusters = 10
 
-    assignment = cluster_articles(vectors, num_clusters, 'gaac')
+    #assignment = cluster_articles(vectors, num_clusters, 'gaac')
     #print assignment
     #print_cluster_means(cluster_means, unique_tokens)
 
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     #print assignment
     #print_cluster_means(cluster_means, unique_tokens)
 
-    #assignment = cluster_articles(vectors, num_clusters, 'nmf')
+    assignment = cluster_articles(vectors, num_clusters, 'nmf')
     #print assignment
 
     #Stores a copy of the cluster in JSON in the motherlode, with or without content
