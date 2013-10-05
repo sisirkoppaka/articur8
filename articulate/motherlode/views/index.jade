@@ -1,0 +1,14 @@
+extend layout
+
+block sidebar
+  -var clusterList = JSON.parse(clusterJSON)
+  -for(var clusterIndex=0; clusterIndex<clusterList.length; clusterIndex++)
+      .widget
+        //p #{clusterList[clusterIndex].cluster}
+        -for(var articleIndex=0; articleIndex<clusterList[clusterIndex].articles.length; articleIndex++)
+          h5.
+            #{clusterList[clusterIndex].articles[articleIndex].feed_title}
+          h1.
+            <a href= #{clusterList[clusterIndex].articles[articleIndex].link}> #{clusterList[clusterIndex].articles[articleIndex].title} </a>
+          p.
+            #{clusterList[clusterIndex].articles[articleIndex].lede}

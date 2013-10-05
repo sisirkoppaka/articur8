@@ -1,10 +1,43 @@
 var express = require('express');
 var app = express()
   , redis = require('redis')
-  , client = redis.createClient("6379","127.0.0.1");;
+  , client = redis.createClient("6379","127.0.0.1")
+  , stylus = require('stylus')
+  , nib = require('nib')
+  , us = require('underscore');
 
 app.use(express.limit('15mb'));
 app.use(express.bodyParser());
+app.use(express.logger('dev'))
+
+function compile(str, path) {
+	return stylus(str)
+		.set('filename', path)
+		.use(nib())
+}
+
+app.set('views', __dirname + '/views')
+app.set('view engine', 'jade')
+app.use(stylus.middleware(
+{
+	src: __dirname + '/public'
+	, compile: compile
+}));
+app.use(express.static(__dirname + '/public'))
+
+
+app.get('/clusters/latest/', function (req, res) {
+  	client.get("clusters:latest",function(err,value){
+		res.type('text/html');
+		res.render('index',
+ 		 { title : 'articulate',
+ 		   clusterJSON : value 
+ 		 });
+		//console.log(value);
+		//res.send(value);
+	});
+});
+
 
 //GET /
 app.get('/', function(req,res) {
@@ -57,14 +90,13 @@ app.post('/clusters/latest/',function(req,res) {
 });
 
 //GET /clusters/latest
-app.get('/clusters/latest/',function(req,res) {
+app.get('/clusters/latest/json/',function(req,res) {
 	client.get("clusters:latest",function(err,value){
 		res.type('application/json');
-		console.log(value);
+		//console.log(value);
 		res.send(value);
 	});
 });
-
 
 app.listen(process.env.PORT || 9999);
 
