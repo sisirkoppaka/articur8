@@ -160,6 +160,10 @@ header {
   border-bottom: 1px dotted;
   text-decoration: none;
 }
+.sidebar .widget h1 a:hover {
+  border-bottom: 1px solid;
+  text-decoration: none;
+}
 .sidebar .widget h5 {
   margin: 13px 10px 4px;
   margin-bottom: 4px;
