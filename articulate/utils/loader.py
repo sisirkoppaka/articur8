@@ -15,14 +15,22 @@ class NewsItem: # class for each news item
     
     def __init__(self, title, feed_title, link, author, content, updated_at):
         
+        # details from the internet
         self.title = title
         self.feed_title = feed_title
         self.link = link
         self.author = author
         self.content = content
         self.updated_at = updated_at
+
+        # our representation
+        self.tfidf_vector = []
+
         self.id = self.identifier
         self.identifier = self.identifier + 1
+
+        self.cluster_id = -1 # cluster id to which this item belongs
+        self.distance_from_center = 0 # distance from cluster center
     
     
 def clean_link(link):
