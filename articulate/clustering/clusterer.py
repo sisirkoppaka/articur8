@@ -19,10 +19,12 @@ import clusterformats
 
 class ClusterObj: # class for each cluster
 
-    def __init__(self, identifier, center, closest_article, article_list):
+    def __init__(self, identifier, center, spread_at_half, spread_at_full, closest_article, article_list):
 
         self.identifier = identifier
         self.center = center
+        self.spread_at_half = spread_at_half
+        self.spread_at_full = spread_at_full
         self.closest_article = closest_article
         self.article_list = article_list
       
@@ -195,8 +197,14 @@ def get_cluster_objects(articles, assignment):
         # find article closest to center
         closest_article_in_cluster = articles_in_cluster[distances.index(min(distances))]    
 
+        # find spread at half and full
+        distances.sort()
+        half = int(len(distances)/2)
+        spread_at_half = sum(distances[:half])/half
+        spread_at_full = sum(distances)/len(distances)
+
         # create the cluster object
-        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster)) 
+        cluster_obj_list.append(ClusterObj(i, cluster_mean, spread_at_half, spread_at_full, closest_article_in_cluster, articles_in_cluster)) 
 
     return cluster_obj_list
     
@@ -225,7 +233,7 @@ def cluster(articles, params):
     assignment = cluster_articles(vectors, num_clusters, method)
     #print assignment
 
-    # get cluster centers
+    # get cluster objects
     clusters = get_cluster_objects(articles, assignment)
 
     return {'clusters': clusters, 'assignment': assignment}
