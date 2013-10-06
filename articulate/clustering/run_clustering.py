@@ -1,7 +1,7 @@
 from articulate.pymotherlode.api import *
 import articulate.utils.loader as loader
 
-import clusterer
+import clusterer, clusterformats
 
 
 class ParamObj:
@@ -18,13 +18,13 @@ articles = loader.get_latest_dump()
 params = ParamObj(10, 'nmf')
 
 # modify article obj as needed and get clusters
-clusters = clusterer.cluster(articles, params)
+result = clusterer.cluster(articles, params)
 
 # print output
-for item in clusters:
+for item in result['clusters']:
     print item.identifier, ":", item.closest_article.title
 
 #Stores a copy of the cluster in JSON in the motherlode, with or without content
-clusterformats.clustersToJSON(articles, assignment)
+clusterformats.clustersToJSON(articles, result['assignment'])
 
 

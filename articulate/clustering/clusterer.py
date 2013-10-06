@@ -1,6 +1,7 @@
 from __future__ import division
 import re, pprint, numpy
 import time
+import math
 
 from nltk import cluster
 from nltk.cluster import euclidean_distance, cosine_distance
@@ -173,7 +174,7 @@ def get_cluster_objects(articles, assignment):
 
     cluster_obj_list = []
 
-    for i in range(num_clusters):
+    for i in range(len(num_clusters)):
 
         # get articles in this cluster
         articles_in_cluster = [articles[count] for count, index in enumerate(assignment) if index == i ]
@@ -200,7 +201,7 @@ def get_cluster_objects(articles, assignment):
     return cluster_obj_list
     
 
-def cluster(articles, params)
+def cluster(articles, params):
    
     # parse the parameters
     num_clusters = params.num_clusters
@@ -227,4 +228,4 @@ def cluster(articles, params)
     # get cluster centers
     clusters = get_cluster_objects(articles, assignment)
 
-    return clusters
+    return {'clusters': clusters, 'assignment': assignment}
