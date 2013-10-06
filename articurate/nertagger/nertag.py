@@ -67,16 +67,10 @@ def run_single_threaded():
     pickle.dump(per_list, per_file)
     per_file.close()
 
-def run_with_celery(ner_type):
-    ner_types = {'ORGANIZATION':'org_list.txt', 'LOCATION':'loc_list.txt', 'PERSON':'per_list.txt'}
-    ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
-    #We would like this...
-    #for i, ner_type in enumerate(ner_types):
-    #    print "run_with_celery: starting with ", ner_type
-    #    run_nertag.delay(ner_type)
-    #But for now, we have only this
-    print "run_with_celery: starting with ", ner_type
-    run_nertag.delay(ner_type)    
+def run_with_celery():
+    #This version of celery_tasks for nertag are optimal if you have more than 3 cores/hyperthreads.
+    print "run_with_celery: starting "
+    run_nertag.delay()    
 
 if __name__ == '__main__':
     ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
@@ -84,7 +78,7 @@ if __name__ == '__main__':
     #run_single_threaded()
 
     #Do 0,1,2 in different runs for now, until some alternate solution is found
-    run_with_celery(ner_types[0])
+    run_with_celery()
 
 
 

@@ -13,13 +13,17 @@ from articurate.nertagger import nertag
 import articurate.utils.loader as article_loader
 import articurate
 
+from celery import current_task
+
+
 @celery.task
-def run_nertag(ner_type):
+def run_nertag():
 	try:
 		articles = article_loader.get_latest_dump()
-		print "run_nertag: starting with ", ner_type
-		run_nertag_by_type.delay(articles, ner_type)
-
+		ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
+		for i, ner_type in enumerate(ner_types):
+			print "run_nertag: starting with ", ner_type
+			run_nertag_by_type.delay(articles, ner_type)
 		print "run_nertag: done!"
 		return 'True'
 	except:
@@ -29,8 +33,8 @@ def run_nertag(ner_type):
 def run_nertag_by_type(articles, ner_type):
 	try:
 		print "run_nertag_by_type: starting ", ner_type
-		all_content = [article.content for article in articles]
-		result = chord((parse_NER_celery.s(article, count, ner_type) for count, article in enumerate(all_content)))(save_celery.s())
+		all_content = [article.content for article in articles[]]
+		result = chord((parse_NER_celery.s(article, count, ner_type) for count, article in enumerate(all_content)))(save_celery.s(kwargs={'ner_type': ner_type}))
 		result.get()
 		print "run_nertag_by_type: done! ", ner_type
 		return 'True'
@@ -38,21 +42,24 @@ def run_nertag_by_type(articles, ner_type):
 		return 'False'
 
 @celery.task
-def save_celery(ner_list):
+def save_celery(ner_list, **kwargs):
 	try:
 		print "save_celery: starting "
-		#print ner_list
+		request = current_task.request
 		ner_list_actual = []
 		for i, nestedItem in enumerate(ner_list):
 			for j, actualItem in enumerate(nestedItem):
 				ner_list_actual.append(actualItem)
 		ner_list_actual = set(ner_list_actual)
-		ner_file = open('nertag_celery.log','w')
+		ner_types = {'ORGANIZATION':'org_list.log', 'LOCATION':'loc_list.log', 'PERSON':'per_list.log'}
+		ner_file = open(ner_types[request.kwargs['kwargs']['ner_type']],'w')
 		pickle.dump(ner_list_actual,ner_file)
 		ner_file.close()
 		return 'True'
 	except:
 		return 'False'
+
+
 
 @celery.task
 def parse_NER_celery(document, articleCount, ner_type):
