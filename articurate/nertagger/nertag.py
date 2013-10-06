@@ -1,14 +1,16 @@
 # coding: utf-8
+
 import re
 import os
 from nltk.tag.stanford import NERTagger
 import time
 import pickle
 
-from articulate.pymotherlode.api import *
-import articulate.utils.loader as loader
+from articurate.pymotherlode.api import *
+import articurate.utils.loader as loader
+from celery_tasks import *
 
-import articulate
+import articurate
 
 # global variables
 org_list = []
@@ -23,8 +25,8 @@ def parse_NER(document):
     total = len(sentences)
     
     #initialize paths
-    englishPath = os.path.join(os.path.join(os.path.dirname(articulate.__file__),'nertagger'),'english.all.3class.distsim.crf.ser.gz')
-    stanfordNERPath = os.path.join(os.path.join(os.path.dirname(articulate.__file__),'nertagger'),'stanford-ner.jar')
+    englishPath = os.path.join(os.path.join(os.path.dirname(articurate.__file__),'nertagger'),'english.all.3class.distsim.crf.ser.gz')
+    stanfordNERPath = os.path.join(os.path.join(os.path.dirname(articurate.__file__),'nertagger'),'stanford-ner.jar')
     
     # initialize tagger
     st = NERTagger(englishPath, stanfordNERPath)
@@ -41,9 +43,7 @@ def parse_NER(document):
         loc_list.extend([item[0] for item in tags if item[1] == 'LOCATION'])
         per_list.extend([item[0] for item in tags if item[1] == 'PERSON'])
 
-
-if __name__ == '__main__':
-
+def run_single_threaded():
     # get articles from wherever
     articles = loader.get_latest_dump()
         
@@ -66,5 +66,26 @@ if __name__ == '__main__':
     per_file = open('per_list.txt', 'w')
     pickle.dump(per_list, per_file)
     per_file.close()
+
+def run_with_celery(ner_type):
+    ner_types = {'ORGANIZATION':'org_list.txt', 'LOCATION':'loc_list.txt', 'PERSON':'per_list.txt'}
+    ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
+    #We would like this...
+    #for i, ner_type in enumerate(ner_types):
+    #    print "run_with_celery: starting with ", ner_type
+    #    run_nertag.delay(ner_type)
+    #But for now, we have only this
+    print "run_with_celery: starting with ", ner_type
+    run_nertag.delay(ner_type)    
+
+if __name__ == '__main__':
+    ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
+
+    #run_single_threaded()
+
+    #Do 0,1,2 in different runs for now, until some alternate solution is found
+    run_with_celery(ner_types[0])
+
+
 
    

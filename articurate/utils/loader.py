@@ -5,7 +5,7 @@ import urllib2
 from urlparse import urlparse,urlunparse
 #from ..pymotherlode import motherlode
 #from .. import pymotherlode
-from articulate.pymotherlode.api import *
+from articurate.pymotherlode.api import *
 
 #from urlparse import urlparse, urlunparse
 

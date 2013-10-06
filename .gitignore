@@ -6,3 +6,5 @@ node_modules
 dump.rdb
 *.swp
 motherlode.log
+celery.log
+*.log
