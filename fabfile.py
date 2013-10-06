@@ -30,3 +30,13 @@ def stop_motherlode():
 	#The below seems to not work, fix me.
 	if not found:
 		print green("stop_motherlode: Could not find process for Motherlode", bold=True)
+
+def restart_motherlode(debug='False'):
+	stop_motherlode()
+	start_motherlode(debug)
+	print green("restart_motherlode: Finished restarting Motherlode ", bold=True)	
+
+def setup_motherlode():
+	local("cd ./articurate/motherlode && npm install")
+	print green("setup_motherlode: Finished satisfying prerequisites for Motherlode ", bold=True)
+
