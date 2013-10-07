@@ -2,9 +2,9 @@
 
 import itertools
 import simplejson as json
-from articulate.pymotherlode.api import *
+from articurate.pymotherlode.api import *
 
-from articulate.utils.config import *
+from articurate.utils.config import *
 
 def getLede(content):
 	#ledeRE = re.compile('^(.*?(?<!\b\w)[.?!])\s+[A-Z0-9]')

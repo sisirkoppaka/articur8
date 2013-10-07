@@ -1,5 +1,5 @@
-from articulate.pymotherlode.api import *
-import articulate.utils.loader as loader
+from articurate.pymotherlode.api import *
+import articurate.utils.loader as loader
 
 import clusterer, clusterformats
 
