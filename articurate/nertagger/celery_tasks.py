@@ -30,41 +30,40 @@ def run_nertag():
     ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']    
 
     try:
-        print "run_nertag_by_type: starting ", ner_types
+        print "run_nertag: starting ", ner_types
 
-        #all_content = [article.content for count, article in enumerate(articles) if count < 5 ]
-        all_content = [article.content for count, article in enumerate(articles)]
+        all_content = [article.content for count, article in enumerate(articles) if count < 2]
 
-        #result = chord(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))(save_celery.s(kwargs={'ner_types': ner_types}))		
-        #result = group(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))()
+        result = chord(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))(save_celery.s(kwargs={'ner_types': ner_types}))
+
+        print "Done ::", len(result)
         
-        g = group(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))
-        result = g.apply_async()
-        result.get(interval=10000)
-        print result
-
         print "run_nertag_by_type: done! ", ner_types
         return 'True'
     except:
         return 'False'
 
 @celery.task
-def save_celery(ner_list, **kwargs):
+def save_celery(results, **kwargs):
     print "save_celery: starting "
-    print ner_list
-    request = current_task.request
-    ner_list_actual = ner_list #[]
-	#for i, nestedItem in enumerate(ner_list):
-	#	for j, actualItem in enumerate(nestedItem):
-	#		ner_list_actual.append(actualItem)
-	#ner_list_actual = set(ner_list_actual)
-	#ner_types = {'ORGANIZATION':'org_list.log', 'LOCATION':'loc_list.log', 'PERSON':'per_list.log'}
-	#ner_file = open(ner_types[request.kwargs['kwargs']['ner_type']],'w')
+        
+    ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
+   
+    # save result to file
+    final_dict = {}
+    for item in ner_types:
+        value = []
+        for dictionary in results:
+            value.extend(dictionary[item])
+        value = list(set(value))
+        final_dict[item] = value    
+               
     ner_file = open("nertagger.log",'w')
-    ner_file.write(json.dumps(ner_list_actual, indent="  "))
-	#pickle.dump(ner_list_actual,ner_file)
-    ner_file.close()
+    ner_file.write(json.dumps(final_dict, indent="  "))
+    ner_file.close()        
 
+    print "save_celery: done! "
+    
 
 
 @celery.task
@@ -94,12 +93,38 @@ def parse_NER_celery(document, articleCount, ner_types):
         print "%d:%d/%d"%(articleCount, count, len(sentences))
         tags = st.tag(sentence.encode('utf-8').split())
 
-        for item in tags:
-            if item[1] in ner_types: # is one of the tags we are interested in
-                values = result[item[1]] 
-                values.append(item[0])
-                result[item[1]] = values
+        if len(tags) < 2:
+            continue
+
+        previous_tag = tags[0][1]
+        string = tags[0][0]
+        index = 1
+        while index < len(tags):
+            current_tag = tags[index][1]
+
+            
+            if current_tag == previous_tag:
+                string = string + " " + tags[index][0]
+            else:
+                if previous_tag in ner_types:
+                    value = result[previous_tag]                   
+                    value.append(string)
+                    result[previous_tag] = value            
+                string = tags[index][0]
+
+            previous_tag = current_tag
+            index = index + 1        
+
+        if previous_tag in ner_types:
+            value = result[previous_tag]                   
+            value.append(string)
+            result[previous_tag] = value
+
+    # convert to set
+    for item in ner_types:
+        value = result[item]
+        value = list(set(value))
+        result[item] = value
 
     print "Article number done:", articleCount, "\n"
-    print result
     return result
