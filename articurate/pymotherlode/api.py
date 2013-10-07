@@ -1,6 +1,7 @@
 """Connect to the Motherlode"""
 
 import requests
+import jsonpickle
 
 SERVER_URL = "http://localhost:9999/"
 
@@ -24,4 +25,13 @@ def getDeltaDump(timestamp):
 	r = requests.get(SERVER_URL+"dumps/delta"+timestamp)
 	return r.content
 
- 
+def storeMetric(method, obj):
+	methodPayload = jsonpickle.encode(obj)
+	payload = {'method':method, 'methodPayload':methodPayload}
+	r = requests.post(SERVER_URL+"metrics/track/",data=payload)    
+
+def getMetric(method):
+	 r = requests.get(SERVER_URL+"metrics/track/"+method)
+	 return jsonpickle.decode(r.content)
+
+

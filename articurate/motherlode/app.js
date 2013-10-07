@@ -79,6 +79,29 @@ app.post('/dumps/delta/',function(req,res) {
 	res.json(true);
 });
 
+//POST /dumps/delta
+app.post('/metrics/track/',function(req,res) {
+	if(!req.body.hasOwnProperty('method') || 
+ 	   !req.body.hasOwnProperty('methodPayload')) {
+		res.statusCode = 400;
+		return res.send('Error 400: Deltadumping API incorrect.');
+	}
+
+	client.set(("metrics:track:"+req.body.method),req.body.methodPayload);
+	//client.set("metrics:track:latest",req.body.timestamp);
+	client.sadd("metrics:track:set",req.body.method);
+	res.json(true);
+});
+
+//GET /dumps/delta/:timestamp
+app.get('/metrics/track/:method',function(req,res) {
+	client.get("metrics:track:"+req.params.method,function(err,value){
+		res.type('text/x-json');
+		console.log(value);
+		res.send(value);
+	});
+});
+
 app.post('/clusters/latest/',function(req,res) {
 	if(!req.body.hasOwnProperty('clusterInJSON') || 
  	   !req.body.hasOwnProperty('tag')) {

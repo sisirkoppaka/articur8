@@ -13,6 +13,8 @@ import nimfa
 import vectorer
 import clusterformats
 
+from articurate.metrics import metrics
+
 # TO DO:
 # 1) Give more weight to Noun
 # 4) Try PCA/SVD/NMF
@@ -27,6 +29,9 @@ class ClusterObj: # class for each cluster
         self.spread_at_full = spread_at_full
         self.closest_article = closest_article
         self.article_list = article_list
+
+    def __str__(self):
+        return "<identifier: %s, center: %s, spread_at_half: %s, spread_at_full: %s, closest_article: %s, article_list: %s>\n" % (self.identifier, self.center, self.spread_at_half, self.spread_at_full, self.closest_article, self.article_list)    
       
       
        
@@ -156,7 +161,7 @@ def cluster_gaac(vectors, num_clusters):
     print "Clustering required", (end_time-start_time),"seconds"
 
     return assignment
-    
+
 def cluster_articles(vectors, num_clusters, method):
 
     # cluster the article vectors
@@ -207,8 +212,9 @@ def get_cluster_objects(articles, assignment):
         cluster_obj_list.append(ClusterObj(i, cluster_mean, spread_at_half, spread_at_full, closest_article_in_cluster, articles_in_cluster)) 
 
     return cluster_obj_list
-    
 
+@metrics.inspect
+@metrics.track    
 def cluster(articles, params):
    
     # parse the parameters

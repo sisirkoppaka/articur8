@@ -32,7 +32,7 @@ def run_nertag():
     try:
         print "run_nertag: starting ", ner_types
 
-        all_content = [article.content for count, article in enumerate(articles) if count < 2]
+        all_content = [article.content for count, article in enumerate(articles)]
 
         result = chord(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))(save_celery.s(kwargs={'ner_types': ner_types}))
 

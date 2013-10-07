@@ -3,6 +3,8 @@ import articurate.utils.loader as loader
 
 import clusterer, clusterformats
 
+from articurate.pymotherlode import api
+import jsonpickle
 
 class ParamObj:
 
@@ -28,3 +30,6 @@ for item in result['clusters']:
 clusterformats.clustersToJSON(articles, result['assignment'])
 
 
+cluster = api.getMetric("articurate.clustering.clusterer.cluster")
+
+print "from metrics", cluster['assignment']
