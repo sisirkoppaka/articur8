@@ -36,7 +36,7 @@ def run_nertag():
 
         result = chord(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))(save_celery.s(kwargs={'ner_types': ner_types}))
 
-        print "Done ::", len(result)
+        #print "Done ::", len(result)
         
         print "run_nertag_by_type: done! ", ner_types
         return 'True'
