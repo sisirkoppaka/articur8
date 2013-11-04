@@ -18,10 +18,10 @@ def tf(word, document, method = 'log'): # finds the term frequency of word in do
         return document.count(word)
 
 
-def tfidf(text): # creates the tf-idf vector using the global 'unique_tokens_dict'
+def tfidf(document, title, boost_title=False): # creates the tf-idf vector using the global 'unique_tokens_dict'
 
-    text = list(text)
-    unique_text = set(text) # for iteration to create vector
+    document = list(document)
+    unique_text = set(document) # for iteration to create vector
 
     # our tfidf vector, initialized to zero
     word_tfidf = [0]*len(unique_tokens_dict) 
@@ -32,8 +32,15 @@ def tfidf(text): # creates the tf-idf vector using the global 'unique_tokens_dic
     # populate vector
     for word in unique_text: 
         index = unique_tokens_dict[word]
-        word_tfidf[index] = tf(word, text, 'log') * IDF[word]
-                
+        word_tfidf[index] = tf(word, document, 'log') * IDF[word]
+            
+    # boost words in title
+    if boost_title == True:
+        for word in title:
+            if word in unique_tokens:
+                index = unique_tokens_dict[word]
+                word_tfidf[index] = word_tfidf[index]*2 
+     
     # find the euclidean norm of the vector
     euclidean_norm = math.sqrt(sum([item*item for item in word_tfidf]))
       
@@ -126,13 +133,32 @@ def vectorize_articles(articles, only_titles = False, truncate = False): # given
         print count
         
         # get tokens from article
-        tokens = cleanify_text(article.title) if only_titles == True else cleanify_text(article.content)
-        
-        # create text object from tokens and add to collection of texts
-        texts.append(nltk.Text(tokens))
+        tokens = cleanify_text(article.content)
+        title = cleanify_text(article.title)
+
+        # generate bigrams
+        #bi_tokens = nltk.bigrams(tokens)
+        #tri_tokens = nltk.trigrams(tokens)
+        #bi_tokens = [' '.join(token).lower() for token in bi_tokens]
+        #bi_tokens = [token for token in bi_tokens if token not in stopwords]
+        # generate trigrams
+        #tri_tokens = [' '.join(token).lower() for token in tri_tokens]
+        #tri_tokens = [token for token in tri_tokens if token not in stopwords]
+
+        # collect all tokens
+        final_tokens = []
+        final_tokens.extend(tokens)
+        #final_tokens.extend(bi_tokens)
+        #final_tokens.extend(tri_tokens)
+
+        text = nltk.Text(final_tokens) # create text from article
+        texts.append(text) # add to collection of texts
+
+        title = nltk.Text(title)
+        titles.append(title)
 
         # make entry in IDF dictionary
-        for token in set(tokens):
+        for token in set(final_tokens):
             if token not in IDF:
                 IDF[token] = 1
             else:
@@ -145,7 +171,9 @@ def vectorize_articles(articles, only_titles = False, truncate = False): # given
         IDF[key] = math.log(num_articles/IDF[key])
     print "IDF dictionary ready for use\n"    
     
-    # convert tokens to collection object
+    # load the list of texts and titles into a TextCollection object.
+    #all_text = texts
+    #all_text.extend(titles)
     collection = nltk.TextCollection(texts)
     print "Created a collection of", len(collection), "terms."
 
@@ -160,12 +188,12 @@ def vectorize_articles(articles, only_titles = False, truncate = False): # given
     # And here we actually call the function and create our array of vectors.
     print "Creating vectors"
     vectors = []
-
-    for count, item in enumerate(texts):
+    for count, item in enumerate(zip(texts, titles)):
         print count
         
-        tfidf_vector = tfidf(item) 
+        tfidf_vector = tfidf(item[0], item[1], boost_title = False) 
         articles[count].tfidf_vector = tfidf_vector # insert in article object
+
         vectors.append(numpy.array(tfidf_vector))
 
     print "Vectors created\n"
@@ -173,15 +201,5 @@ def vectorize_articles(articles, only_titles = False, truncate = False): # given
     return IDF, unique_tokens_dict, unique_tokens, vectors
 
 
-# SCRATCH
- 
-        # generate bigrams
-        #bi_tokens = nltk.bigrams(tokens)
-        #tri_tokens = nltk.trigrams(tokens)
-        #bi_tokens = [' '.join(token).lower() for token in bi_tokens]
-        #bi_tokens = [token for token in bi_tokens if token not in stopwords]
-        # generate trigrams
-        #tri_tokens = [' '.join(token).lower() for token in tri_tokens]
-        #tri_tokens = [token for token in tri_tokens if token not in stopwords]
 
-       
+        

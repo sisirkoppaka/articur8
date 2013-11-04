@@ -8,16 +8,17 @@ import jsonpickle
 
 class ParamObj:
 
-    def __init__(self, num_clusters, clustering_method):
+    def __init__(self, num_clusters, clustering_method, only_titles):
         self.num_clusters = num_clusters
         self.clustering_method = clustering_method
+        self.only_titles = only_titles
 
 
 # get articles from wherever
 articles = loader.get_latest_dump()
 
 # params
-params = ParamObj(10, 'nmf')
+params = ParamObj(10, 'nmf', True)
 
 # modify article obj as needed and get clusters
 result = clusterer.cluster(articles, params)
@@ -28,7 +29,6 @@ for item in result['clusters']:
 
 #Stores a copy of the cluster in JSON in the motherlode, with or without content
 clusterformats.clustersToJSON(articles, result['assignment'])
-
 
 cluster = api.getMetric("articurate.clustering.clusterer.cluster")
 
