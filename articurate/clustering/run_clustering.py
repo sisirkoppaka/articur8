@@ -18,14 +18,14 @@ class ParamObj:
 articles = loader.get_latest_dump()
 
 # params
-params = ParamObj(10, 'nmf', True)
+params = ParamObj(20, 'nmf', True)
 
 # modify article obj as needed and get clusters
 result = clusterer.cluster(articles, params)
 
 # print output
 for item in result['clusters']:
-    print item.identifier, ":", item.closest_article.title
+    print item.identifier, ":", len(item.article_list), ":", item.closest_article.title 
 
 #Stores a copy of the cluster in JSON in the motherlode, with or without content
 clusterformats.clustersToJSON(articles, result['assignment'])
