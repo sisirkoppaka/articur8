@@ -15,7 +15,7 @@ from articurate.celery import celery
 from articurate.nertagger import nertag
 import articurate.utils.loader as article_loader
 import articurate
-
+from articurate.metrics import metrics
 from celery import current_task
 from celery.utils.log import get_task_logger
 
@@ -27,6 +27,8 @@ logger = get_task_logger(__name__)
 def run_nertag():
 
     articles = article_loader.get_latest_dump()
+    articles = articles[:10]
+
     ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']    
 
     try:
@@ -44,6 +46,7 @@ def run_nertag():
         return 'False'
 
 @celery.task
+@metrics.track
 def save_celery(results, **kwargs):
     print "save_celery: starting "
         
@@ -63,6 +66,7 @@ def save_celery(results, **kwargs):
     ner_file.close()        
 
     print "save_celery: done! "
+    return json.dumps(final_dict, indent="  ")
     
 
 
@@ -117,7 +121,7 @@ def parse_NER_celery(document, articleCount, ner_types):
 
         if previous_tag in ner_types:
             value = result[previous_tag]                   
-            value.append(string)
+            value.append(string.lower())
             result[previous_tag] = value
 
     # convert to set
