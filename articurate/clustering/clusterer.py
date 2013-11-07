@@ -6,26 +6,37 @@ from clustering_algos import *
 
 from articurate.metrics import metrics
 
-# TO DO:
-# 1) Give more weight to Noun
-# 4) Try PCA/SVD/NMF
 
-class ClusterObj: # class for each cluster
+class ClusterObj: 
+
+    """ This class describes a cluster
+
+    Members:
+    identifier: cluster id
+    center: the mean of all cluster members
+    closest_article: the member of cluster closest to the cluster center
+    articles_list: list of article ids that belong to cluster
+
+    """
 
     def __init__(self, identifier, center, spread_at_half, spread_at_full, closest_article, article_list):
 
         self.identifier = identifier
         self.center = center
-        self.spread_at_half = spread_at_half
-        self.spread_at_full = spread_at_full
         self.closest_article = closest_article
         self.article_list = article_list
+        self.spread_at_half = spread_at_half
+        self.spread_at_full = spread_at_full
 
     def __str__(self):
         return "<identifier: %s, center: %s, spread_at_half: %s, spread_at_full: %s, closest_article: %s, article_list: %s>\n" % (self.identifier, self.center, self.spread_at_half, self.spread_at_full, self.closest_article, self.article_list)    
       
              
-def print_cluster_means(cluster_means, unique_tokens): # displays top words in each mean
+def print_cluster_means(cluster_means, unique_tokens): 
+
+    """ Given list of vectors and corresponding token list, prints the words in vector
+    
+    """
 
     for count, array in enumerate(cluster_means):
         indices = sorted(range(len(array)),key=lambda x:array[x])

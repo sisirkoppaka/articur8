@@ -26,6 +26,7 @@ logger = get_task_logger(__name__)
 @celery.task
 def run_nertag():
 
+    # get latest dump of articles
     articles = article_loader.get_latest_dump()
     articles = articles[:10]
 
@@ -37,11 +38,10 @@ def run_nertag():
         all_content = [article.content for count, article in enumerate(articles)]
 
         result = chord(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))(save_celery.s(kwargs={'ner_types': ner_types}))
-
-        #print "Done ::", len(result)
         
-        print "run_nertag_by_type: done! ", ner_types
+        print "run_nertag: done! ", ner_types
         return 'True'
+
     except:
         return 'False'
 

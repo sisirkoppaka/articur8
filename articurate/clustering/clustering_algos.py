@@ -13,6 +13,14 @@ import nimfa
 
 def cluster_nmf(vectors, rank):
 
+    """ Takes in vectors and clusters them using Non Negative Matrix Factorization.
+
+    Inputs:
+    vectors -- matrix containing rows of vectors
+    rank -- number of clusters to create
+
+    """
+
     print "Starting NMF clustering"
  
     start_time = time.time()
@@ -50,7 +58,17 @@ def cluster_nmf(vectors, rank):
     return assignment
 
 
-def cluster_kmeans(vectors, num_clusters, distance_metric):
+def cluster_kmeans(vectors, num_clusters, distance_metric = "cosine"):
+
+
+    """ Takes in vectors and clusters them using KMeans clustering.
+
+    Inputs:
+    vectors -- matrix containing rows of vectors
+    num_clusters -- number of clusters to create
+    distance_metric -- distance measure between vectors (default "cosine")
+
+    """
 
     print "Starting KMeans clustering"
     
@@ -72,13 +90,22 @@ def cluster_kmeans(vectors, num_clusters, distance_metric):
 
 def cluster_gaac(vectors, num_clusters):
 
+
+    """ Takes in vectors and clusters them using Group Average Agglomerative clustering with cosine distance.
+
+    Inputs:
+    vectors -- matrix containing rows of vectors
+    num_clusters -- number of clusters to create
+
+    """
+
     print "Starting GAAC clustering"
     
     start_time = time.time()
 
-##    # nltk implementation might not be that good
-##    clusterer = cluster.GAAClusterer(num_clusters)
-##    assignment = clusterer.cluster(vectors, True)
+    ##    # nltk implementation might not be that good
+    ##    clusterer = cluster.GAAClusterer(num_clusters)
+    ##    assignment = clusterer.cluster(vectors, True)
 
     distance = spatial.distance.pdist(vectors, 'cosine')
 
