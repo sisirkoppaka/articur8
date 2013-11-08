@@ -1,6 +1,6 @@
 from __future__ import division
 
-import numpy
+import numpy, scipy
 import time
 import math
 
@@ -8,8 +8,12 @@ from nltk import cluster
 from nltk.cluster import euclidean_distance, cosine_distance
 from scipy import spatial
 from scipy.sparse import csr_matrix
+import scipy.cluster.hierarchy as hier
+import scipy.spatial.distance as dist
 import fastcluster
+
 import nimfa
+
 
 def cluster_nmf(vectors, rank):
 
@@ -103,9 +107,9 @@ def cluster_gaac(vectors, num_clusters):
     
     start_time = time.time()
 
-    ##    # nltk implementation might not be that good
-    ##    clusterer = cluster.GAAClusterer(num_clusters)
-    ##    assignment = clusterer.cluster(vectors, True)
+    # nltk implementation might not be that good
+    #clusterer = cluster.GAAClusterer(num_clusters)
+    #assignment = clusterer.cluster(vectors, True)
 
     distance = spatial.distance.pdist(vectors, 'cosine')
 

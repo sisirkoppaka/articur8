@@ -85,7 +85,10 @@ def get_cluster_objects(articles, assignment):
             article.cluster_id = i
 
         # find article closest to center
-        closest_article_in_cluster = articles_in_cluster[distances.index(min(distances))]    
+        if len(distances) > 0:
+            closest_article_in_cluster = articles_in_cluster[distances.index(min(distances))]    
+        else:
+            closest_article_in_cluster = None
 
         # find spread at half and full
         distances.sort()

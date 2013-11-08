@@ -22,7 +22,7 @@ class ParamObj:
 articles = loader.get_latest_dump()
 
 # params
-params = ParamObj(20, 'gaac', True)
+params = ParamObj(30, 'gaac', True)
 
 # get clusters, result has assignment list and cluster objects
 result = clusterer.cluster(articles, params)

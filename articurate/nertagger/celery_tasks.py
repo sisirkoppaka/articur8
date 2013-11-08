@@ -28,7 +28,6 @@ def run_nertag():
 
     # get latest dump of articles
     articles = article_loader.get_latest_dump()
-    articles = articles[:10]
 
     ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']    
 
@@ -101,20 +100,20 @@ def parse_NER_celery(document, articleCount, ner_types):
             continue
 
         previous_tag = tags[0][1]
-        string = tags[0][0]
+        string = tags[0][0].lower()
         index = 1
         while index < len(tags):
             current_tag = tags[index][1]
 
             
             if current_tag == previous_tag:
-                string = string + " " + tags[index][0]
+                string = string + " " + tags[index][0].lower()
             else:
                 if previous_tag in ner_types:
                     value = result[previous_tag]                   
-                    value.append(string)
+                    value.append(string.lower())
                     result[previous_tag] = value            
-                string = tags[index][0]
+                string = tags[index][0].lower()
 
             previous_tag = current_tag
             index = index + 1        
