@@ -22,7 +22,7 @@ class ParamObj:
 articles = loader.get_latest_dump()
 
 # params
-params = ParamObj(20, 'nmf', True)
+params = ParamObj(20, 'gaac', True)
 
 # get clusters, result has assignment list and cluster objects
 result = clusterer.cluster(articles, params)
@@ -33,5 +33,5 @@ for item in result['clusters']:
 
 # stores a copy of the cluster in JSON in the motherlode, with or without content
 clusterformats.clustersToJSON(articles, result['assignment'])
-cluster = api.getMetric("articurate.clustering.clusterer.cluster")
-print "from metrics", cluster['assignment']
+#cluster = api.getMetric("articurate.clustering.clusterer.cluster")
+#print "from metrics", cluster['assignment']

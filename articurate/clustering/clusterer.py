@@ -90,8 +90,10 @@ def get_cluster_objects(articles, assignment):
         # find spread at half and full
         distances.sort()
         half = int(len(distances)/2)
-        spread_at_half = sum(distances[:half])/half
-        spread_at_full = sum(distances)/len(distances)
+        #spread_at_half = sum(distances[:half])/half
+        #spread_at_full = sum(distances)/len(distances)
+        spread_at_half = 0
+        spread_at_full = 0
 
         # create the cluster object
         cluster_obj_list.append(ClusterObj(i, cluster_mean, spread_at_half, spread_at_full, closest_article_in_cluster, articles_in_cluster)) 
