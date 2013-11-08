@@ -6,7 +6,7 @@ var app = express()
   , nib = require('nib')
   , us = require('underscore');
 
-app.use(express.limit('15mb'));
+app.use(express.limit('512mb'));
 app.use(express.bodyParser());
 app.use(express.logger('dev'))
 

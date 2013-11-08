@@ -98,7 +98,7 @@ def get_cluster_objects(articles, assignment):
 
     return cluster_obj_list
 
-@metrics.inspect
+#@metrics.inspect
 @metrics.track    
 def cluster(articles, params):
    
