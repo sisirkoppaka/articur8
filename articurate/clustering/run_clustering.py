@@ -8,10 +8,8 @@ import jsonpickle
 
 
 class ParamObj:
-	
-	""" Define parameters to use for clustering articles
-
-	"""
+    
+    """ Define parameters to use for clustering articles"""
 
     def __init__(self, num_clusters, clustering_method, only_titles):
         self.num_clusters = num_clusters
