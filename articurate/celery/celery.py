@@ -15,9 +15,9 @@ celery = Celery('articurate.celery',
                 		 'articurate.nertagger.celery_tasks'])
 
 # Optional configuration, see the application user guide.
-celery.conf.update(
-    CELERY_CHORD_PROPAGATES = True,
-)
+#celery.conf.update(
+#    CELERY_CHORD_PROPAGATES = True,
+#)
 
 if __name__ == '__main__':
     celery.start()
