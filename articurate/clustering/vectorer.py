@@ -1,9 +1,12 @@
 """Convert articles to tf-df vectors"""
 
+from articurate.pymotherlode import api
+
 import nltk
 from nltk.stem.wordnet import WordNetLemmatizer
 import math
 import numpy
+import json
 
 IDF = {} # to make script faster
 unique_tokens_dict = {} # unique_token["token"] = id
@@ -18,7 +21,7 @@ def tf(word, document, method = 'log'): # finds the term frequency of word in do
         return document.count(word)
 
 
-def tfidf(text): # creates the tf-idf vector using the global 'unique_tokens_dict'
+def tfidf(text, boost_ne): # creates the tf-idf vector using the global 'unique_tokens_dict'
 
     text = list(text)
     unique_text = set(text) # for iteration to create vector
@@ -28,11 +31,23 @@ def tfidf(text): # creates the tf-idf vector using the global 'unique_tokens_dic
 
     # euclidean norm to divide by
     euclidean_norm = 0
-  
+   
+    # default boost of one
+    boost = 1
+
+    if boost_ne:
+        ne_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery"))
+
     # populate vector
     for word in unique_text: 
+
+        if boost_ne:
+            # check if work in ne_dict
+            if word in ne_dict['ORGANIZATION'] or word in ne_dict['LOCATION'] or word in ne_dict['PERSON']:
+                boost = 2  # ne boost
+
         index = unique_tokens_dict[word]
-        word_tfidf[index] = tf(word, text, 'log') * IDF[word]
+        word_tfidf[index] = tf(word, text, 'log') * IDF[word] * boost
                 
     # find the euclidean norm of the vector
     euclidean_norm = math.sqrt(sum([item*item for item in word_tfidf]))
@@ -110,7 +125,7 @@ def truncated_SVD_vector(vectors, reduced_dim): # transforms input vectors to lo
     return truncated_vectors
 
 
-def vectorize_articles(articles, only_titles = True, truncate = False): # given a list of articles, converts to the tf-idf vector space
+def vectorize_articles(articles, only_titles = True, truncate = False, boost_ne = True): # given a list of articles, converts to the tf-idf vector space
 
     global unique_tokens
     global unique_tokens_dict
@@ -169,7 +184,8 @@ def vectorize_articles(articles, only_titles = True, truncate = False): # given 
         if count % 100 == 0:
             print count
         
-        tfidf_vector = tfidf(item) 
+        # get the tfidf vector
+        tfidf_vector = tfidf(item, boost_ne) 
         articles[count].tfidf_vector = tfidf_vector # insert in article object
         vectors.append(numpy.array(tfidf_vector))
 

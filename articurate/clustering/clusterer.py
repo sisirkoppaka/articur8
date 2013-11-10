@@ -122,3 +122,5 @@ def cluster(articles, params):
     clusters = get_cluster_objects(articles, assignment)
 
     return {'clusters': clusters, 'assignment': assignment}
+
+    
