@@ -22,13 +22,13 @@ class ClusterObj:
 
     """
 
-    def __init__(self, identifier, center, closest_article, article_list):
+    def __init__(self, identifier, center, avg_pairwise_dist, closest_article, article_list):
 
         self.identifier = identifier
         self.center = center
         self.closest_article = closest_article
         self.article_list = article_list
-        self.avg_pairwise_dist = 0
+        self.avg_pairwise_dist = avg_pairwise_dist
 
     def __str__(self):
         return "<identifier: %s, center: %s, closest_article: %s, avg_pairwise_dist: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.avg_pairwise_dist, self.article_list)    
@@ -92,6 +92,10 @@ def get_cluster_objects(articles, assignment):
         else:
             closest_article_in_cluster = None
 
+        # find average pairwise distance of articles in cluster    
+        avg_pairwise_dist_matrix = scipy.spatial.distance.pdist(vectors_in_cluster)
+        avg_pairwise_dist = numpy.sum(avg_pairwise_dist_matrix)
+
         # # find spread at half and full
         # distances.sort()
         # half = int(len(distances)/2)
@@ -101,7 +105,7 @@ def get_cluster_objects(articles, assignment):
         # spread_at_full = 0
 
         # create the cluster object
-        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster)) 
+        cluster_obj_list.append(ClusterObj(i, cluster_mean, avg_pairwise_dist, closest_article_in_cluster, articles_in_cluster)) 
 
     return cluster_obj_list
 
@@ -114,19 +118,6 @@ def rank_cluster_objects(cluster_objects, articles):
 
     # first metric: get the average pairwise distance for articles in cluster
     # rank in ascending order of values
-    for cluster in cluster_objects:
-
-        # get tf-idf vectors of articles in cluster
-        article_vectors = [articles[index].tfidf_vector for index in cluster.articles_list]
-
-        avg_pairwise_dist_matrix = scipy.spatial.distance.pdist(article_vectors)
-        avg_pairwise_dist = numpy.sum(avg_pairwise_dist_matrix)
-
-        print avg_pairwise_dist_matrix.shape
-
-        cluster.avg_pairwise_dist = avg_pairwise_dist
-
-
     for cluster in cluster_objects:
         print cluster.identifier, cluster.avg_pairwise_dist
 
