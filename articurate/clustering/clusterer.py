@@ -1,5 +1,7 @@
 from __future__ import division
 
+import numpy, scipy
+
 import vectorer
 import clusterformats
 from clustering_algos import *
@@ -15,21 +17,21 @@ class ClusterObj:
     identifier: cluster id
     center: the mean of all cluster members
     closest_article: the member of cluster closest to the cluster center
+    avg_pairwise_dist: average pairwise distance between articles in cluster
     articles_list: list of article ids that belong to cluster
 
     """
 
-    def __init__(self, identifier, center, spread_at_half, spread_at_full, closest_article, article_list):
+    def __init__(self, identifier, center, closest_article, article_list):
 
         self.identifier = identifier
         self.center = center
         self.closest_article = closest_article
         self.article_list = article_list
-        self.spread_at_half = spread_at_half
-        self.spread_at_full = spread_at_full
+        self.avg_pairwise_dist = 0
 
     def __str__(self):
-        return "<identifier: %s, center: %s, spread_at_half: %s, spread_at_full: %s, closest_article: %s, article_list: %s>\n" % (self.identifier, self.center, self.spread_at_half, self.spread_at_full, self.closest_article, self.article_list)    
+        return "<identifier: %s, center: %s, closest_article: %s, avg_pairwise_dist: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.avg_pairwise_dist, self.article_list)    
       
              
 def print_cluster_means(cluster_means, unique_tokens): 
@@ -90,21 +92,21 @@ def get_cluster_objects(articles, assignment):
         else:
             closest_article_in_cluster = None
 
-        # find spread at half and full
-        distances.sort()
-        half = int(len(distances)/2)
-        #spread_at_half = sum(distances[:half])/half
-        #spread_at_full = sum(distances)/len(distances)
-        spread_at_half = 0
-        spread_at_full = 0
+        # # find spread at half and full
+        # distances.sort()
+        # half = int(len(distances)/2)
+        # #spread_at_half = sum(distances[:half])/half
+        # #spread_at_full = sum(distances)/len(distances)
+        # spread_at_half = 0
+        # spread_at_full = 0
 
         # create the cluster object
-        cluster_obj_list.append(ClusterObj(i, cluster_mean, spread_at_half, spread_at_full, closest_article_in_cluster, articles_in_cluster)) 
+        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster)) 
 
     return cluster_obj_list
 
 
-def rank_cluster_objects(cluster_objects):
+def rank_cluster_objects(cluster_objects, articles):
 
     """ Given a list of cluster objects, ranks them according to different metrics
 
@@ -112,7 +114,31 @@ def rank_cluster_objects(cluster_objects):
 
     # first metric: get the average pairwise distance for articles in cluster
     # rank in ascending order of values
-     
+    for cluster in cluster_objects:
+
+        # get tf-idf vectors of articles in cluster
+        article_vectors = [articles[index].tfidf_vector for index in cluster.articles_list]
+
+        avg_pairwise_dist_matrix = scipy.spatial.distance.pdist(article_vectors)
+        avg_pairwise_dist = numpy.sum(avg_pairwise_dist_matrix)
+
+        print avg_pairwise_dist_matrix.shape
+
+        cluster.avg_pairwise_dist = avg_pairwise_dist
+
+
+    for cluster in cluster_objects:
+        print cluster.identifier, cluster.avg_pairwise_dist
+
+    print "\n\nsorting now\n\n"
+
+    # now sort them
+    sorted_clusters = sorted(cluster_objects, key = lambda cluster: cluster.avg_pairwise_dist)
+
+    for cluster in sorted_clusters:
+        print cluster.identifier, cluster.avg_pairwise_dist    
+
+    return sorted_clusters
 
 #@metrics.inspect
 @metrics.track    
@@ -133,7 +159,7 @@ def cluster(articles, params):
     clusters = get_cluster_objects(articles, assignment)
 
     # rank cluster objects
-    clusters = rank_cluster_objects(clusters)
+    clusters = rank_cluster_objects(clusters, articles)
 
     return {'clusters': clusters, 'assignment': assignment}
 
