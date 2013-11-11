@@ -44,7 +44,7 @@ def tfidf(text, boost_ne): # creates the tf-idf vector using the global 'unique_
         if boost_ne:
             # check if work in ne_dict
             if word in ne_dict['ORGANIZATION'] or word in ne_dict['LOCATION'] or word in ne_dict['PERSON']:
-                boost = 2  # ne boost
+                boost = 1.5  # ne boost
 
         index = unique_tokens_dict[word]
         word_tfidf[index] = tf(word, text, 'log') * IDF[word] * boost

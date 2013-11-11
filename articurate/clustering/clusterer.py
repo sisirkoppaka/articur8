@@ -94,7 +94,7 @@ def get_cluster_objects(articles, assignment):
 
         # find average pairwise distance of articles in cluster    
         avg_pairwise_dist_matrix = scipy.spatial.distance.pdist(vectors_in_cluster)
-        avg_pairwise_dist = numpy.sum(avg_pairwise_dist_matrix)
+        avg_pairwise_dist = numpy.sum(avg_pairwise_dist_matrix) / (len(articles_in_cluster)*(len(articles_in_cluster)-1)/2 + 0.1)
 
         # # find spread at half and full
         # distances.sort()
@@ -117,18 +117,10 @@ def rank_cluster_objects(cluster_objects, articles):
     """
 
     # first metric: get the average pairwise distance for articles in cluster
-    # rank in ascending order of values
-    for cluster in cluster_objects:
-        print cluster.identifier, cluster.avg_pairwise_dist
-
-    print "\n\nsorting now\n\n"
-
+    # rank in ascending order of values    
+    
     # now sort them
     sorted_clusters = sorted(cluster_objects, key = lambda cluster: cluster.avg_pairwise_dist)
-
-    for cluster in sorted_clusters:
-        print cluster.identifier, cluster.avg_pairwise_dist    
-
     return sorted_clusters
 
 #@metrics.inspect
