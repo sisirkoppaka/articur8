@@ -103,6 +103,17 @@ def get_cluster_objects(articles, assignment):
 
     return cluster_obj_list
 
+
+def rank_cluster_objects(cluster_objects):
+
+    """ Given a list of cluster objects, ranks them according to different metrics
+
+    """
+
+    # first metric: get the average pairwise distance for articles in cluster
+    # rank in ascending order of values
+     
+
 #@metrics.inspect
 @metrics.track    
 def cluster(articles, params):
@@ -120,6 +131,9 @@ def cluster(articles, params):
 
     # get cluster objects
     clusters = get_cluster_objects(articles, assignment)
+
+    # rank cluster objects
+    clusters = rank_cluster_objects(clusters)
 
     return {'clusters': clusters, 'assignment': assignment}
 
