@@ -49,6 +49,35 @@ def clustersToJSON(articles, assignments):
 
 	storeCluster(json.dumps(clustersForHumans),tag)
 
+
+def clustersToJSONNew(clusters):
+	tag = "kmeans"
+	#clusters = list(set(assignments))
+
+	clustersForHumans = []
+
+	insertContent = config['clusterFormats.insertContent']
+
+	if insertContent:
+		print "Inserting content into ClusterInJSON"
+	else:
+		print "Not inserting content into ClusterInJSON"
+
+	for i, cluster in enumerate(clusters):
+		articlesInCluster = []
+		for j, article in enumerate(cluster.article_list):
+			lede = getLede(article.content)			
+			if insertContent:
+				#With Content
+				articlesInCluster.append({'title':article.title, 'feed_title':article.feed_title, 'link':article.link, 'author':article.author, 'lede':lede, 'content':article.content, 'updated_at':article.updated_at})
+			else:
+				#And Without
+				articlesInCluster.append({'title':article.title, 'feed_title':article.feed_title, 'link':article.link, 'author':article.author, 'lede':lede, 'updated_at':article.updated_at})
+
+		clustersForHumans.append({'cluster': i,'articles':articlesInCluster})
+
+	storeCluster(json.dumps(clustersForHumans),tag)
+
 #if __name__ == "__main__":
 #	hello()
 #	articles = []

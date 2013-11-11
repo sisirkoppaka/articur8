@@ -32,6 +32,8 @@ for item in result['clusters']:
     print item.identifier, ":", len(item.article_list), ":", item.closest_article.title 
 
 # stores a copy of the cluster in JSON in the motherlode, with or without content
-clusterformats.clustersToJSON(articles, result['assignment'])
+#clusterformats.clustersToJSON(articles, result['assignment']) #Deprecated
+clusterformats.clustersToJSONNew(result['clusters']) #Deprecated
+
 #cluster = api.getMetric("articurate.clustering.clusterer.cluster")
 #print "from metrics", cluster['assignment']
