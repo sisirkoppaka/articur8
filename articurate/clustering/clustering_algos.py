@@ -3,6 +3,7 @@ from __future__ import division
 import numpy, scipy
 import time
 import math
+from sklearn.cluster import DBSCAN
 
 from nltk import cluster
 from nltk.cluster import euclidean_distance, cosine_distance
@@ -107,6 +108,10 @@ def cluster_gaac(vectors, num_clusters):
     
     start_time = time.time()
 
+    # doesnt work :: try scipy clustering with threshold
+    #assignment = hier.fcluster(numpy.clip(fastcluster.linkage(vectors, method='complete', metric='cosine'), 0, 1), 0.2, criterion='distance')
+
+
     # nltk implementation might not be that good
     #clusterer = cluster.GAAClusterer(num_clusters)
     #assignment = clusterer.cluster(vectors, True)
@@ -114,6 +119,16 @@ def cluster_gaac(vectors, num_clusters):
     distance = spatial.distance.pdist(vectors, 'cosine')
 
     linkage = fastcluster.linkage(distance,method="complete")
+    
+    # try DBSCAN
+    #db = DBSCAN(eps=0.01, min_samples=5).fit(spatial.distance.squareform(distance))
+    #labels = db.labels_
+
+    # Number of clusters in labels, ignoring noise if present.
+    #n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+    #print 'Estimated number of clusters: %d' % n_clusters_
+
 
     clustdict = {i:[i] for i in xrange(len(linkage)+1)}
     for i in xrange(len(linkage)-num_clusters+1):
