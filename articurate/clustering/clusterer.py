@@ -1,6 +1,7 @@
 from __future__ import division
 
 import numpy, scipy, math
+from datetime import datetime
 
 import vectorer
 import clusterformats
@@ -122,7 +123,7 @@ def get_cluster_metrics(cluster_objects):
     oldest_timestamp = cluster_objects[0].article_list[0].updated_at
     newest_timestamp = 0
     for cluster in cluster_objects:
-        cluster_timestamps = [article.updated_at for article in cluster.article_list]
+        cluster_timestamps = [int(datetime.strptime(article.updated_at, '%Y-%m-%d %H:%M:%S').strftime('%s')) for article in cluster.article_list]
         oldest_timestamp = min(oldest_timestamp, min(cluster_timestamps))
         newest_timestamp = max(newest_timestamp, max(cluster_timestamps))
 
@@ -140,7 +141,7 @@ def get_cluster_metrics(cluster_objects):
         cluster.metrics.append(math.log(len(cluster.article_list)))
 
         # fourth metric: average normalized age of articles in cluster
-        cluster_timestamps = [article.updated_at for article in cluster.article_list]
+        cluster_timestamps = [int(datetime.strptime(article.updated_at, '%Y-%m-%d %H:%M:%S').strftime('%s')) for article in cluster.article_list]
         avg_normalized_cluster_age = (sum(cluster_timestamps)/len(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
         cluster.metric_names.append('avg_normalized_cluster_age')
         cluster.metrics.append(avg_normalized_cluster_age)
@@ -157,7 +158,7 @@ def rank_clusters(cluster_objects):
     """
 
     # now sort them
-    sorted_clusters = sorted(cluster_objects, key = lambda cluster: cluster.avg_pairwise_dist)
+    sorted_clusters = sorted(cluster_objects, key = lambda cluster: cluster.metrics[cluster.metric_names.index('avg_pairwise_dist')])
     return sorted_clusters
 
 
