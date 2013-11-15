@@ -119,10 +119,10 @@ def get_cluster_metrics(cluster_objects):
     """
 
     # get the time of oldest and newest article 
-    oldest_timestamp = cluster_objects[0].articles_list[0].updated_at
+    oldest_timestamp = cluster_objects[0].article_list[0].updated_at
     newest_timestamp = 0
     for cluster in cluster_objects:
-        cluster_timestamps = [article.updated_at for article in cluster.articles_list]
+        cluster_timestamps = [article.updated_at for article in cluster.article_list]
         oldest_timestamp = min(oldest_timestamp, min(cluster_timestamps))
         newest_timestamp = max(newest_timestamp, max(cluster_timestamps))
 
@@ -140,7 +140,7 @@ def get_cluster_metrics(cluster_objects):
         cluster.metrics.append(math.log(len(cluster.article_list)))
 
         # fourth metric: average normalized age of articles in cluster
-        cluster_timestamps = [article.updated_at for article in cluster.articles_list]
+        cluster_timestamps = [article.updated_at for article in cluster.article_list]
         avg_normalized_cluster_age = (numpy.mean(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
         cluster.metric_names.append('avg_normalized_cluster_age')
         cluster.metrics.append(avg_normalized_cluster_age)
