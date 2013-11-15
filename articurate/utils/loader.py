@@ -26,11 +26,14 @@ class NewsItem: # class for each news item
         # our representation
         self.tfidf_vector = []
 
+        # our fields
+        self.cluster_id = -1 # cluster id to which this item belongs
+        self.distance_from_center = 0 # distance from cluster center
         self.id = self.identifier
         self.identifier = self.identifier + 1
 
-        self.cluster_id = -1 # cluster id to which this item belongs
-        self.distance_from_center = 0 # distance from cluster center
+        # extra metric fields
+        self.num_ne = 0 # number of named entities
     
     
 def clean_link(link):

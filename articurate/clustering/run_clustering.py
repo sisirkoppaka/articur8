@@ -29,7 +29,7 @@ result = clusterer.cluster(articles, params)
 
 # print output
 for item in result['clusters']:
-    print item.identifier, ":", len(item.article_list), ":", item.closest_article.title 
+    print item.identifier, ":", len(item.article_list), ":", item.closest_article.title, "\n", item.metrics 
 
 # stores a copy of the cluster in JSON in the motherlode, with or without content
 #clusterformats.clustersToJSON(articles, result['assignment']) #Deprecated

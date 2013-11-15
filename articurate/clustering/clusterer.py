@@ -1,6 +1,6 @@
 from __future__ import division
 
-import numpy, scipy
+import numpy, scipy, math
 
 import vectorer
 import clusterformats
@@ -28,7 +28,10 @@ class ClusterObj:
         self.center = center
         self.closest_article = closest_article
         self.article_list = article_list
-        self.avg_pairwise_dist = avg_pairwise_dist
+
+        # metrics
+        self.metric_names = ['avg_pairwise_dist']
+        self.metrics = [avg_pairwise_dist]
 
     def __str__(self):
         return "<identifier: %s, center: %s, closest_article: %s, avg_pairwise_dist: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.avg_pairwise_dist, self.article_list)    
@@ -110,20 +113,54 @@ def get_cluster_objects(articles, assignment):
     return cluster_obj_list
 
 
-def rank_cluster_objects(cluster_objects, articles):
+def get_cluster_metrics(cluster_objects):
 
-    """ Given a list of cluster objects, ranks them according to different metrics
-
+    """ Given a list of cluster objects, extracts metrics
     """
 
-    # first metric: get the average pairwise distance for articles in cluster
-    # rank in ascending order of values    
-    
+    # get the time of oldest and newest article 
+    oldest_timestamp = cluster_objects[0].articles_list[0].updated_at
+    newest_timestamp = 0
+    for cluster in cluster_objects:
+        cluster_timestamps = [article.updated_at for article in cluster.articles_list]
+        oldest_timestamp = min(oldest_timestamp, min(cluster_timestamps))
+        newest_timestamp = max(newest_timestamp, max(cluster_timestamps))
+
+    for cluster in cluster_objects:
+
+        # first metric: average pairwise distance for articles in cluster, already found
+
+        # second metric: average number of named entities per title in cluster
+        avg_num_ne = sum([article.num_ne for article in cluster.article_list])
+        cluster.metric_names.append('avg_named_entities')
+        cluster.metrics.append(avg_num_ne)
+
+        # third metric: log of number of articles in cluster
+        cluster.metric_names.append('log_num_articles')
+        cluster.metrics.append(math.log(len(cluster.article_list)))
+
+        # fourth metric: average normalized age of articles in cluster
+        cluster_timestamps = [article.updated_at for article in cluster.articles_list]
+        avg_normalized_cluster_age = (numpy.mean(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
+        cluster.metric_names.append('avg_normalized_cluster_age')
+        cluster.metrics.append(avg_normalized_cluster_age)
+
+        # fifth metric: normalized age of newest article in cluster
+        newest_normalized_cluster_age = (max(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
+        cluster.metric_names.append('newest_normalized_cluster_age')
+        cluster.metrics.append(newest_normalized_cluster_age)        
+
+
+def rank_clusters(cluster_objects):
+
+    """ Given a list of cluster objects, ranks them according to learnt function
+    """
+
     # now sort them
     sorted_clusters = sorted(cluster_objects, key = lambda cluster: cluster.avg_pairwise_dist)
     return sorted_clusters
 
-#@metrics.inspect
+
 @metrics.track    
 def cluster(articles, params):
    
@@ -135,15 +172,18 @@ def cluster(articles, params):
     # convert articles to tf-idf vectors
     IDF, unique_tokens_dict, unique_tokens, vectors = vectorer.vectorize_articles(articles, only_titles)
 
+    # cluster the articles to get assignment
     assignment = cluster_articles(vectors, num_clusters, clustering_method)
-    #print assignment
 
-    # get cluster objects
-    clusters = get_cluster_objects(articles, assignment)
+    # create cluster objects from assignment
+    cluster_objects = get_cluster_objects(articles, assignment)
 
-    # rank cluster objects
-    clusters = rank_cluster_objects(clusters, articles)
+    # derive metrics from cluster objects
+    get_cluster_metrics(cluster_objects)
 
-    return {'clusters': clusters, 'assignment': assignment}
+    # rank the cluster objects based on metrics
+    cluster_objects = rank_clusters(cluster_objects)
+
+    return {'clusters': cluster_objects, 'assignment': assignment}
 
     
