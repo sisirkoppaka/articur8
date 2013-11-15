@@ -18,7 +18,7 @@ class ClusterObj:
     center: the mean of all cluster members
     closest_article: the member of cluster closest to the cluster center
     avg_pairwise_dist: average pairwise distance between articles in cluster
-    articles_list: list of article ids that belong to cluster
+    article_list: list of article ids that belong to cluster
 
     """
 
@@ -131,7 +131,7 @@ def get_cluster_metrics(cluster_objects):
         # first metric: average pairwise distance for articles in cluster, already found
 
         # second metric: average number of named entities per title in cluster
-        avg_num_ne = sum([article.num_ne for article in cluster.article_list])
+        avg_num_ne = sum([article.num_ne for article in cluster.article_list]) / len(cluster.article_list)
         cluster.metric_names.append('avg_named_entities')
         cluster.metrics.append(avg_num_ne)
 
@@ -141,7 +141,7 @@ def get_cluster_metrics(cluster_objects):
 
         # fourth metric: average normalized age of articles in cluster
         cluster_timestamps = [article.updated_at for article in cluster.article_list]
-        avg_normalized_cluster_age = (numpy.mean(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
+        avg_normalized_cluster_age = (sum(cluster_timestamps)/len(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
         cluster.metric_names.append('avg_normalized_cluster_age')
         cluster.metrics.append(avg_normalized_cluster_age)
 
