@@ -85,7 +85,7 @@ def tfidf(text, boost_ne): # creates the tf-idf vector using the global 'unique_
 
 def extend_stopwords(stopwords, area): # adds more stopwords as required
 
-    if area == 'technology'
+    if area == 'technology':
         stopwords.extend(['techcrunch', 'verge', 'allthingsd', 'engadget', 'gigaom', 'huffpost', 'wsj', 'bloomberg',
                       'businessweek', 'vogue', 'technica', '9to5mac', 'reuters', '9to5',
                       'cnet', 'zdnet', 'venturebeat', 'forbes', 
