@@ -272,6 +272,7 @@ def startFD():
 
     genSnapshot(endTime)
 
-#f __name__ == "__main__":
-#startFD()
+if __name__ == "__main__":
+    #startFD()
+    print "Deprecated: Please use 'fab runFD' to run FeedDigger."
 
