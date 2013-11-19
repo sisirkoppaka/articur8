@@ -22,6 +22,8 @@ from readability.readability import Document
 
 from articurate.utils.config import *
 
+from articurate.metrics import metrics
+
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
 SERVER_URL = "http://localhost:9999/"
@@ -107,6 +109,7 @@ def genStringID():
     """docstring for genStringID"""
     return (datetime.utcnow()).strftime('%Y%m%d%H%M')
 
+@metrics.track
 def getRSSSources():
     """Gets all the RSS sources we want to mine from
     and returns a list of rss objects"""
@@ -269,6 +272,6 @@ def startFD():
 
     genSnapshot(endTime)
 
-if __name__ == "__main__":
-    startFD()
+#f __name__ == "__main__":
+#startFD()
 

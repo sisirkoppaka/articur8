@@ -5,6 +5,8 @@ import psutil
 import re
 import redis
 
+from articurate.fd.fd import startFD
+
 #Start Motherlode
 def start_motherlode(debug='False'):
 	if debug=='False':
@@ -109,4 +111,7 @@ def kickrestart(debug='False'):
 	kickstop()
 	kickstart(debug)
 	print green("kickrestart: Done!", bold=True)
+
+def runFD():
+	startFD()
 
