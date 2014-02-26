@@ -8,33 +8,8 @@ from urlparse import urlparse,urlunparse
 from articurate.pymotherlode.api import *
 
 #from urlparse import urlparse, urlunparse
-
-class NewsItem: # class for each news item
-
-    identifier = 0 # static id for each news item
-    
-    def __init__(self, title, feed_title, link, author, content, updated_at):
-        
-        # details from the internet
-        self.title = title
-        self.feed_title = feed_title
-        self.link = link
-        self.author = author
-        self.content = content
-        self.updated_at = updated_at
-
-        # our representation
-        self.tfidf_vector = []
-
-        # our fields
-        self.cluster_id = -1 # cluster id to which this item belongs
-        self.distance_from_center = 0 # distance from cluster center
-        self.id = self.identifier
-        self.identifier = self.identifier + 1
-
-        # extra metric fields
-        self.num_ne = 0 # number of named entities
-    
+from articurate.utils.class_definitions import NewsItem     
+ 
     
 def clean_link(link):
     #Clean link
