@@ -100,7 +100,7 @@ def get_cluster_metrics(cluster_objects):
         avg_num_ne = sum([article.num_ne for article in cluster.article_list]) / len(cluster.article_list)
         cluster.metrics['avg_named_entities'] = avg_num_ne
 
-        # third metric: log of number of articles in cluster
+        # third metric: number of articles in cluster
         cluster.metrics['num_articles'] = len(cluster.article_list)
 
         # fourth metric: average publishing time of articles in cluster

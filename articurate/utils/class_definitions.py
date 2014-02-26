@@ -44,7 +44,7 @@ class ClusterObj:
         self.identifier = identifier
         self.center = center
         self.closest_article = closest_article
-        self.article_list = article_list
+        self.article_list = article_list if len(article_list) > 0 else []
 
         # metrics
         self.metrics = { 'avg_pairwise_dist': avg_pairwise_dist}
