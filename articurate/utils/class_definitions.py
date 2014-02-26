@@ -47,8 +47,7 @@ class ClusterObj:
         self.article_list = article_list
 
         # metrics
-        self.metric_names = ['avg_pairwise_dist']
-        self.metrics = [avg_pairwise_dist]
+        self.metrics = { 'avg_pairwise_dist': avg_pairwise_dist}
 
     def __str__(self):
         return "<identifier: %s, center: %s, closest_article: %s, avg_pairwise_dist: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.avg_pairwise_dist, self.article_list)    

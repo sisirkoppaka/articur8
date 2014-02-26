@@ -4,6 +4,13 @@ def rank_clusters(cluster_objects):
     """
 
     # now sort them
-    sorted_clusters = sorted(cluster_objects, key = lambda cluster: cluster.metrics[cluster.metric_names.index('avg_pairwise_dist')])
+    sorted_clusters = sorted(cluster_objects, key = lambda cluster : rank_formula(cluster))
     return sorted_clusters
 
+
+
+def rank_formula(cluster):
+	
+	""" Our formula to score each cluster """
+
+	return cluster.metrics['avg_pairwise_dist']

@@ -3,7 +3,6 @@ from __future__ import division
 import numpy, scipy
 import time
 import math
-from sklearn.cluster import DBSCAN
 
 from nltk import cluster
 from nltk.cluster import euclidean_distance, cosine_distance

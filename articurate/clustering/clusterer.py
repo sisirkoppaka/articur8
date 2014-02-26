@@ -92,37 +92,29 @@ def get_cluster_metrics(cluster_objects):
     """ Given a list of cluster objects, extracts metrics
     """
 
-    # get the time of oldest and newest article 
-    oldest_timestamp = cluster_objects[0].article_list[0].updated_at
-    newest_timestamp = 0
-    for cluster in cluster_objects:
-        cluster_timestamps = [int(datetime.strptime(article.updated_at, '%Y-%m-%d %H:%M:%S').strftime('%s')) for article in cluster.article_list]
-        oldest_timestamp = min(oldest_timestamp, min(cluster_timestamps))
-        newest_timestamp = max(newest_timestamp, max(cluster_timestamps))
-
     for cluster in cluster_objects:
 
         # first metric: average pairwise distance for articles in cluster, already found
 
         # second metric: average number of named entities per title in cluster
         avg_num_ne = sum([article.num_ne for article in cluster.article_list]) / len(cluster.article_list)
-        cluster.metric_names.append('avg_named_entities')
-        cluster.metrics.append(avg_num_ne)
+        cluster.metrics['avg_named_entities'] = avg_num_ne
 
         # third metric: log of number of articles in cluster
-        cluster.metric_names.append('log_num_articles')
-        cluster.metrics.append(math.log(len(cluster.article_list)))
+        cluster.metrics['num_articles'] = len(cluster.article_list)
 
-        # fourth metric: average normalized age of articles in cluster
+        # fourth metric: average publishing time of articles in cluster
         cluster_timestamps = [int(datetime.strptime(article.updated_at, '%Y-%m-%d %H:%M:%S').strftime('%s')) for article in cluster.article_list]
-        avg_normalized_cluster_age = (sum(cluster_timestamps)/len(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
-        cluster.metric_names.append('avg_normalized_cluster_age')
-        cluster.metrics.append(avg_normalized_cluster_age)
+        avg_pub_time = sum(cluster_timestamps)/len(cluster_timestamps) 
+        cluster.metrics['average_publishing_time'] = avg_pub_time
 
-        # fifth metric: normalized age of newest article in cluster
-        newest_normalized_cluster_age = (max(cluster_timestamps) - oldest_timestamp) / (newest_timestamp - oldest_timestamp)
-        cluster.metric_names.append('newest_normalized_cluster_age')
-        cluster.metrics.append(newest_normalized_cluster_age)        
+        # fifth metric: publishing time of newest article in cluster
+        newest_pub_time = max(cluster_timestamps)
+        cluster.metrics['newest_publishing_time'] = newest_pub_time    
+
+        # sixth metric: publishing time of oldest article in cluster
+        oldest_pub_time = min(cluster_timestamps)
+        cluster.metrics['oldest_publishing_time'] = oldest_pub_time    
 
 
 @metrics.track    
