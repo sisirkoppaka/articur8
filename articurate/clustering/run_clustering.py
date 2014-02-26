@@ -5,24 +5,13 @@ import clusterer, clusterformats
 
 from articurate.pymotherlode import api
 import jsonpickle
-
-
-class ParamObj:
-    
-    """ Define parameters to use for clustering articles"""
-
-    def __init__(self, num_clusters, clustering_method, only_titles):
-        self.num_clusters = num_clusters
-        self.clustering_method = clustering_method
-        self.only_titles = only_titles
-
-
+from articurate.utils.class_definitions import ParamObj     
 
 # get articles from wherever
 articles = loader.get_latest_dump()
 
-# params
-params = ParamObj(50, 'gaac', True)
+# define parameters
+params = ParamObj(50, 'gaac', True) # (num_clusters, clustering_method, only_titles)
 
 # get clusters, result has assignment list and cluster objects
 result = clusterer.cluster(articles, params)

@@ -15,6 +15,65 @@ import fastcluster
 
 import nimfa
 
+def cluster_gaac(vectors, num_clusters):
+
+
+    """ Takes in vectors and clusters them using Group Average Agglomerative clustering with cosine distance.
+
+    Inputs:
+    vectors -- matrix containing rows of vectors
+    num_clusters -- number of clusters to create
+
+    """
+
+    print "Starting GAAC clustering"
+    
+    start_time = time.time()
+
+    # doesnt work :: try scipy clustering with threshold
+    #assignment = hier.fcluster(numpy.clip(fastcluster.linkage(vectors, method='complete', metric='cosine'), 0, 1), 0.2, criterion='distance')
+
+
+    # nltk implementation might not be that good
+    #clusterer = cluster.GAAClusterer(num_clusters)
+    #assignment = clusterer.cluster(vectors, True)
+
+    distance = spatial.distance.pdist(vectors, 'cosine')
+
+    linkage = fastcluster.linkage(distance,method="complete")
+    
+    # try DBSCAN
+    #db = DBSCAN(eps=0.01, min_samples=5).fit(spatial.distance.squareform(distance))
+    #labels = db.labels_
+
+    # Number of clusters in labels, ignoring noise if present.
+    #n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+    #print 'Estimated number of clusters: %d' % n_clusters_
+
+
+    clustdict = {i:[i] for i in xrange(len(linkage)+1)}
+    for i in xrange(len(linkage)-num_clusters+1):
+        clust1= int(linkage[i][0])
+        clust2= int(linkage[i][1])
+        clustdict[max(clustdict)+1] = clustdict[clust1] + clustdict[clust2]
+        del clustdict[clust1], clustdict[clust2]
+
+    # generate the assignment list (vector -> cluster id)
+    assignment = [-1]*len(vectors)
+
+    count = 0
+    for key in clustdict:
+        value = clustdict[key]
+        for item in value:
+            assignment[item] = count
+        count = count + 1
+
+    end_time = time.time()
+    print "Clustering required", (end_time-start_time),"seconds"
+
+    return assignment
+
 
 def cluster_nmf(vectors, rank):
 
@@ -93,61 +152,3 @@ def cluster_kmeans(vectors, num_clusters, distance_metric = "cosine"):
     return assignment
 
 
-def cluster_gaac(vectors, num_clusters):
-
-
-    """ Takes in vectors and clusters them using Group Average Agglomerative clustering with cosine distance.
-
-    Inputs:
-    vectors -- matrix containing rows of vectors
-    num_clusters -- number of clusters to create
-
-    """
-
-    print "Starting GAAC clustering"
-    
-    start_time = time.time()
-
-    # doesnt work :: try scipy clustering with threshold
-    #assignment = hier.fcluster(numpy.clip(fastcluster.linkage(vectors, method='complete', metric='cosine'), 0, 1), 0.2, criterion='distance')
-
-
-    # nltk implementation might not be that good
-    #clusterer = cluster.GAAClusterer(num_clusters)
-    #assignment = clusterer.cluster(vectors, True)
-
-    distance = spatial.distance.pdist(vectors, 'cosine')
-
-    linkage = fastcluster.linkage(distance,method="complete")
-    
-    # try DBSCAN
-    #db = DBSCAN(eps=0.01, min_samples=5).fit(spatial.distance.squareform(distance))
-    #labels = db.labels_
-
-    # Number of clusters in labels, ignoring noise if present.
-    #n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-    #print 'Estimated number of clusters: %d' % n_clusters_
-
-
-    clustdict = {i:[i] for i in xrange(len(linkage)+1)}
-    for i in xrange(len(linkage)-num_clusters+1):
-        clust1= int(linkage[i][0])
-        clust2= int(linkage[i][1])
-        clustdict[max(clustdict)+1] = clustdict[clust1] + clustdict[clust2]
-        del clustdict[clust1], clustdict[clust2]
-
-    # generate the assignment list (vector -> cluster id)
-    assignment = [-1]*len(vectors)
-
-    count = 0
-    for key in clustdict:
-        value = clustdict[key]
-        for item in value:
-            assignment[item] = count
-        count = count + 1
-
-    end_time = time.time()
-    print "Clustering required", (end_time-start_time),"seconds"
-
-    return assignment

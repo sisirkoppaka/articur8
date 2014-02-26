@@ -4,39 +4,12 @@ import numpy, scipy, math
 from datetime import datetime
 
 import vectorer
+import ranker
 import clusterformats
 from clustering_algos import *
 
 from articurate.metrics import metrics
-
-
-class ClusterObj: 
-
-    """ This class describes a cluster
-
-    Members:
-    identifier: cluster id
-    center: the mean of all cluster members
-    closest_article: the member of cluster closest to the cluster center
-    avg_pairwise_dist: average pairwise distance between articles in cluster
-    article_list: list of article ids that belong to cluster
-
-    """
-
-    def __init__(self, identifier, center, avg_pairwise_dist, closest_article, article_list):
-
-        self.identifier = identifier
-        self.center = center
-        self.closest_article = closest_article
-        self.article_list = article_list
-
-        # metrics
-        self.metric_names = ['avg_pairwise_dist']
-        self.metrics = [avg_pairwise_dist]
-
-    def __str__(self):
-        return "<identifier: %s, center: %s, closest_article: %s, avg_pairwise_dist: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.avg_pairwise_dist, self.article_list)    
-      
+from articurate.utils.class_definitions import ClusterObj     
              
 def print_cluster_means(cluster_means, unique_tokens): 
 
@@ -152,16 +125,6 @@ def get_cluster_metrics(cluster_objects):
         cluster.metrics.append(newest_normalized_cluster_age)        
 
 
-def rank_clusters(cluster_objects):
-
-    """ Given a list of cluster objects, ranks them according to learnt function
-    """
-
-    # now sort them
-    sorted_clusters = sorted(cluster_objects, key = lambda cluster: cluster.metrics[cluster.metric_names.index('avg_pairwise_dist')])
-    return sorted_clusters
-
-
 @metrics.track    
 def cluster(articles, params):
    
@@ -183,7 +146,7 @@ def cluster(articles, params):
     get_cluster_metrics(cluster_objects)
 
     # rank the cluster objects based on metrics
-    cluster_objects = rank_clusters(cluster_objects)
+    cluster_objects = ranker.rank_clusters(cluster_objects)
 
     return {'clusters': cluster_objects, 'assignment': assignment}
 
