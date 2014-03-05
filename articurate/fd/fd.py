@@ -20,9 +20,8 @@ import requests
 from urlparse import urlparse,urlunparse
 from readability.readability import Document
 
-from articurate.utils.config import *
-
 from articurate.metrics import metrics
+from articurate.pymotherlode.api import *
 
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
@@ -96,10 +95,6 @@ def clean_link_only_redirects(link):
     link = l.geturl()
     return link
 
-def storeDeltaDump(timestamp,deltadump):
-    payload = {'timestamp':timestamp,'deltadump':deltadump}
-    r = requests.post(SERVER_URL+"dumps/delta/",data=payload)
-
 def prettify(element):
     rough_string = ElementTree.tostring(element, 'utf-8')
     reparsed = minidom.parseString(rough_string)
@@ -109,7 +104,7 @@ def genStringID():
     """docstring for genStringID"""
     return (datetime.utcnow()).strftime('%Y%m%d%H%M')
 
-@metrics.track
+#@metrics.track
 def getRSSSources():
     """Gets all the RSS sources we want to mine from
     and returns a list of rss objects"""
@@ -164,8 +159,8 @@ def getEntryContent(entry): # gets whatever field information is present in entr
     
     return outline
 
-def genSnapshot(endTime):
-    """dumps articles found in [currentTime-endTime:currentTime] minutes"""
+def genSnapshot(interval):
+    """dumps articles found in [currentTime-interval:currentTime] minutes"""
 
     stringID = genStringID() # generates a unique ID based on time
     generated_on = datetime.utcnow()
@@ -187,7 +182,7 @@ def genSnapshot(endTime):
     head = SubElement(root, 'head')
 
     title = SubElement(head, 'title')
-    title.text = 'grep last '+str(endTime)+' minutes '+stringID
+    title.text = 'grep last '+str(interval)+' minutes '+stringID
     
     dc = SubElement(head, 'dateCreated')
     dc.text = str(generated_on)
@@ -208,7 +203,7 @@ def genSnapshot(endTime):
             try:               
                 logger.info("Parsed "+d.feed.title)                  
                 for entry in d.entries:
-                    if (datetime(*entry.updated_parsed[:6]) > (generated_on-timedelta(minutes = endTime))) and (datetime(*entry.updated_parsed[:6]) < (generated_on)):
+                    if (datetime(*entry.updated_parsed[:6]) > (generated_on-timedelta(minutes = interval))) and (datetime(*entry.updated_parsed[:6]) < (generated_on)):
                         # entry lies in required range
                         logger.info("Found "+entry.title+" at "+d.feed.title)
 
@@ -257,20 +252,25 @@ def genSnapshot(endTime):
     #fout = open('../feeddumps/'+stringID+".opml",'w')
     #fout.write((prettify(root)).encode('utf-8'))
     #fout.close()
-    storeDeltaDump(stringID,(prettify(root)).encode('utf-8'))
-
     #putCloud("river",stringID+".opml")
     #os.remove(stringID+".opml")
 
+
+    # output dig to redis server
+    storeDeltaDump(stringID,(prettify(root)).encode('utf-8'))
+
+    # update dump key cache with latest entry
+    updateDumpKeyCache(stringID)
+
+
     logger.info("Ended "+str(datetime.utcnow()))
 
-def startFD():
+def startFD(interval):
     LOG_FILENAME_INFO = 'feeddigger_info.log'
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
-
-    endTime = config['fd.windowSize'] # below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
-
-    genSnapshot(endTime)
+    
+    # below gets stuff in time range of (currentTime) minutes to (currentTime - interval) minutes
+    genSnapshot(interval)
 
 if __name__ == "__main__":
     #startFD()

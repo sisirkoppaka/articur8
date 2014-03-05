@@ -6,6 +6,7 @@ import re
 import redis
 
 from articurate.fd.fd import startFD
+from articurate.utils.config import *
 
 #Start Motherlode
 def start_motherlode(debug='False'):
@@ -112,6 +113,13 @@ def kickrestart(debug='False'):
 	kickstart(debug)
 	print green("kickrestart: Done!", bold=True)
 
+# collect articles on a cold start
+def runFD_coldStart():
+	interval = config['fd.coldStartWindowSize']
+	startFD(interval)
+
+# regular article collection (delta updates)
 def runFD():
-	startFD()
+    interval = config['fd.windowSize']
+    startFD(interval)
 

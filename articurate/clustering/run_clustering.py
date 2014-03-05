@@ -8,7 +8,8 @@ import jsonpickle
 from articurate.utils.class_definitions import ParamObj     
 
 # get articles from wherever
-articles = loader.get_latest_dump()
+#articles = loader.get_latest_dump()
+articles = loader.collect_last_dumps()
 
 # define parameters
 params = ParamObj(50, 'gaac', True) # (num_clusters, clustering_method, only_titles)

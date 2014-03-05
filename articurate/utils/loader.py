@@ -70,7 +70,21 @@ def get_latest_dump():
     items = get_items(dom)
             
     return items	
-		
+	
+
+def collect_last_dumps():
+
+    xml_content_list = getAllCacheDumps() 
+
+    items = []
+
+    for xml_content in xml_content_list:
+        dom = parseString(xml_content)
+        items.extend(get_items(dom))
+
+    return items
+
+
 def load_xml_data(file_name): # loads the opml file
 
     dom = parse(file_name) # parse an XML file by name

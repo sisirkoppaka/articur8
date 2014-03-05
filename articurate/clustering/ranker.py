@@ -22,5 +22,5 @@ def rank_formula(cluster):
 	# avg_pairwise_dist
 	# average_publishing_time
 
-	#return math.log(cluster.metrics['avg_named_entities'] + 2) * math.log(cluster.metrics['num_articles'] + 1) / (cluster.metrics['avg_pairwise_dist']+0.5)
-	return  1/(cluster.metrics['avg_pairwise_dist']+0.5)
+	return math.log(cluster.metrics['avg_named_entities'] + 2) * math.log(cluster.metrics['num_articles'] + 1) / (cluster.metrics['avg_pairwise_dist']+0.5)
+	#return  1/(cluster.metrics['avg_pairwise_dist']+0.5)
