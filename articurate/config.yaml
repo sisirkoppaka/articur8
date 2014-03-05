@@ -1,4 +1,4 @@
-dump.keyCacheSize: 100 # Store keys of last 100 dumps 
+dump.keyCacheSize: 72 # Store keys of last 72 dumps (half day) at 10 mins per dump
 
 fd.windowSize: 10 # Minutes back into the past that feeds should be dug on a normal run
 fd.coldStartWindowSize: 640 # Minutes back into past that feeds should be dug on a cold start
