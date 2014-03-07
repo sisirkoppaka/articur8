@@ -171,7 +171,7 @@ def genSnapshot(interval):
     logger.setLevel(logging.INFO)
 
     # get RSS sources from the web
-    rss_sources_json = getRSSSources()
+    #rss_sources_json = getRSSSources()
     #rss_sources_2 = rss_sources_json['rss']
 
     #Example of getting a function output by key
