@@ -50,7 +50,7 @@ def tf(word, document, method = 'log'): # finds the term frequency of word in do
         return document.count(word)
 
 
-def tfidf(text, boost_ne): # creates the tf-idf vector using the global 'unique_tokens_dict'
+def tfidf(text, boost_ne, ne_dict = {}): # creates the tf-idf vector using the global 'unique_tokens_dict'
 
     text = list(text)
     unique_text = set(text) # for iteration to create vector
@@ -63,10 +63,7 @@ def tfidf(text, boost_ne): # creates the tf-idf vector using the global 'unique_
    
     # default boost of one
     boost = 1
-    num_ne = 0
-
-    if boost_ne:
-        ne_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery"))
+    num_ne = 0        
 
     # populate vector
     for word in unique_text: 
@@ -198,13 +195,16 @@ def vectorize_articles(articles, only_titles = True, use_SVD = False, boost_ne =
     print "Creating vectors"
     vectors = []
 
+    # get the NER list 
+    ne_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery")) if boost_ne else {}
+
     for count, item in enumerate(texts):
         
         if count % 100 == 0:
             print count
         
         # get the tfidf vector
-        tfidf_info = tfidf(item, boost_ne) 
+        tfidf_info = tfidf(item, boost_ne, ne_dict) 
         tfidf_vector = tfidf_info['tfidf_vector']
         articles[count].tfidf_vector = tfidf_vector # insert in article object
         articles[count].num_ne = tfidf_info['num_ne'] # insert number of named entities in article object
