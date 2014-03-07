@@ -9,6 +9,7 @@ import numpy
 import json
 
 from articurate.metrics import metrics
+from articurate.pymotherlode.api import *
 
 
 IDF = {} # to make script faster
@@ -120,7 +121,11 @@ def cleanify_text(text): # converts text to tokens
     # list of stopwords
     #stopwords = nltk.corpus.stopwords.words('english') 
     #stopwords = extend_stopwords(stopwords, 'technology')
-    stopwords = get_stopwords()
+
+    #Do this for storing it first time in DB
+    #stopwords = get_stopwords()
+    #Do this for retrieving from DB henceforth
+    stopwords = getMetricByKey("articurate.clustering.vectorer.get_stopwords", "tech")
     
     # tokenize article (makes list of words), make everything smallcaps, and lemmatize it (keeps only stems, eg: 'winning' to 'win')        
     tokens = [lmtzr.lemmatize(w.lower()) for w in nltk.word_tokenize(text.encode("utf-8"))]
