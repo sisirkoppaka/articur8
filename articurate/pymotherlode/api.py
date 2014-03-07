@@ -36,6 +36,10 @@ def getMetric(method):
 	r = requests.get(SERVER_URL+"metrics/track/"+method)
 	return jsonpickle.decode(r.content)
 
+def getMetricByKey(method, key):
+	r = requests.get(SERVER_URL+"metrics/track/"+method+"_"+key)
+	return jsonpickle.decode(r.content)	
+
 def updateDumpKeyCache(timestamp):
 	# try to get the key cache
 	r_server = redis.StrictRedis(host='localhost',port=6379, db=0)

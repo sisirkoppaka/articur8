@@ -104,7 +104,7 @@ def genStringID():
     """docstring for genStringID"""
     return (datetime.utcnow()).strftime('%Y%m%d%H%M')
 
-#@metrics.track
+@metrics.track_by("tech")
 def getRSSSources():
     """Gets all the RSS sources we want to mine from
     and returns a list of rss objects"""
@@ -124,7 +124,8 @@ def getRSSSources():
         except:
             pass
 
-    return rss_sources
+
+    return {'rss': rss_sources}
 
 def getEntryContent(entry): # gets whatever field information is present in entry
 
@@ -170,7 +171,15 @@ def genSnapshot(interval):
     logger.setLevel(logging.INFO)
 
     # get RSS sources
-    rss_sources = getRSSSources()
+    rss_sources_json = getRSSSources()
+    rss_sources = rss_sources_json['rss']
+
+    #Example of getting a function output by key
+    #print getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
+    #Or this also works, but preferably use the above
+    #print getMetric("articurate.fd.fd.getRSSSources_tech")
+
+
     logger.info("Num RSS sources "+str(len(rss_sources)))
     print "Num RSS sources = ", len(rss_sources)
 
