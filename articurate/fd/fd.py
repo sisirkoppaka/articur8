@@ -28,7 +28,7 @@ AWS_SECRET_ACCESS_KEY = "NOTHING"
 SERVER_URL = "http://localhost:9999/"
 
 
-class RSSObj: # object to store the rss feeds
+class RSSObj(object): # object to store the rss feeds
     def __init__(self, title, xmlUrl, htmlUrl = None):
         
         self.title = title
@@ -36,7 +36,7 @@ class RSSObj: # object to store the rss feeds
         self.htmlUrl = "" if htmlUrl == None else htmlUrl
         
 
-class OutlineObj: # object which we store for each entry
+class OutlineObj(object): # object which we store for each entry
     def __init__(self, title = None, link = None, author = None):
 
         self.title = "None" if title == None else title
@@ -170,12 +170,21 @@ def genSnapshot(interval):
     logger = logging.getLogger("["+stringID+"]")
     logger.setLevel(logging.INFO)
 
-    # get RSS sources
+    # get RSS sources from the web
     rss_sources_json = getRSSSources()
-    rss_sources = rss_sources_json['rss']
+    #rss_sources_2 = rss_sources_json['rss']
 
     #Example of getting a function output by key
-    #print getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
+    rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
+    rss_sources = rss_sources_json['rss']
+
+    #print rss_sources
+
+    #if rss_sources == rss_sources_2:
+    #    print "equal"
+    #else:
+    #    print "unequal"
+    #print rss_sources_2    
     #Or this also works, but preferably use the above
     #print getMetric("articurate.fd.fd.getRSSSources_tech")
 
