@@ -13,7 +13,8 @@ def storeDeltaDump(timestamp,deltadump):
 
 def storeCluster(clusterInJSON, tag):
     payload = {'clusterInJSON':clusterInJSON,'tag':tag}
-    r = requests.post(SERVER_URL+"clusters/latest/",data=payload)    
+    r = requests.post(SERVER_URL+"clusters/latest/",data=payload)  
+    print r, r.content  
 
 def getLatestCluster():
  	r = requests.get(SERVER_URL+"clusters/latest/")

@@ -6,9 +6,11 @@ var app = express()
   , nib = require('nib')
   , us = require('underscore');
 
-app.use(express.limit('5120mb'));
-app.use(express.bodyParser());
+// deprecated mofo
+//app.use(express.limit('5120mb'));
+//app.use(express.bodyParser());
 app.use(express.logger('dev'))
+app.use(express.bodyParser({limit: '500mb'}));
 
 function compile(str, path) {
 	return stylus(str)
