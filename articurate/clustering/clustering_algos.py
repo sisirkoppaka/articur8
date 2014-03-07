@@ -31,7 +31,7 @@ def cluster_gaac(vectors, num_clusters):
 
     distance = spatial.distance.pdist(vectors, 'cosine')
 
-    linkage = fastcluster.linkage(distance,method="complete")
+    linkage = fastcluster.linkage(distance, method="weighted")
 
     clustdict = {i:[i] for i in xrange(len(linkage)+1)}
     for i in xrange(len(linkage)-num_clusters+1):

@@ -39,7 +39,7 @@ class ClusterObj:
 
     """
 
-    def __init__(self, identifier, center, avg_pairwise_dist, closest_article, article_list):
+    def __init__(self, identifier, center, closest_article, article_list):
 
         self.identifier = identifier
         self.center = center
@@ -47,10 +47,10 @@ class ClusterObj:
         self.article_list = article_list if len(article_list) > 0 else []
 
         # metrics
-        self.metrics = { 'avg_pairwise_dist': avg_pairwise_dist}
+        self.metrics = {}
 
     def __str__(self):
-        return "<identifier: %s, center: %s, closest_article: %s, avg_pairwise_dist: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.avg_pairwise_dist, self.article_list)    
+        return "<identifier: %s, center: %s, closest_article: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.article_list)    
  
  
 class ParamObj:

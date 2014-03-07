@@ -2,6 +2,7 @@ from __future__ import division
 
 import numpy, scipy, math
 from datetime import datetime
+from scipy.spatial.distance import cosine as scipy_cos_dist
 
 import vectorer
 import ranker
@@ -69,20 +70,8 @@ def get_cluster_objects(articles, assignment):
         else:
             closest_article_in_cluster = None
 
-        # find average pairwise distance of articles in cluster    
-        avg_pairwise_dist_matrix = scipy.spatial.distance.pdist(vectors_in_cluster)
-        avg_pairwise_dist = numpy.sum(avg_pairwise_dist_matrix) / (len(articles_in_cluster)*(len(articles_in_cluster)-1)/2 + 0.1)
-
-        # # find spread at half and full
-        # distances.sort()
-        # half = int(len(distances)/2)
-        # #spread_at_half = sum(distances[:half])/half
-        # #spread_at_full = sum(distances)/len(distances)
-        # spread_at_half = 0
-        # spread_at_full = 0
-
         # create the cluster object
-        cluster_obj_list.append(ClusterObj(i, cluster_mean, avg_pairwise_dist, closest_article_in_cluster, articles_in_cluster)) 
+        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster)) 
 
     return cluster_obj_list
 
@@ -94,7 +83,11 @@ def get_cluster_metrics(cluster_objects):
 
     for cluster in cluster_objects:
 
-        # first metric: average pairwise distance for articles in cluster, already found
+        # first metric: average distance from center
+        #center = cluster.center
+        center = cluster.closest_article.tfidf_vector
+        avg_distance_from_center = sum([scipy_cos_dist(article.tfidf_vector, center) for article in cluster.article_list]) / len(cluster.article_list)
+        cluster.metrics['avg_distance_from_center'] = avg_distance_from_center
 
         # second metric: average number of named entities per title in cluster
         avg_num_ne = sum([article.num_ne for article in cluster.article_list]) / len(cluster.article_list)
