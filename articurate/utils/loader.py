@@ -58,6 +58,22 @@ def get_items(dom):
 
     return items
 		
+
+def deduplicate(articles):
+
+    selected_articles = []
+
+    for i in range(0, len(articles)):
+        ignore = False
+        for j in range(0, len(articles)):
+            if i != j and articles[i].title == articles[j].title and articles[i].feed_title == articles[j].feed_title and articles[i].updated_at < articles[j].updated_at:
+                ignore = True
+                break
+        if not ignore:
+            selected_articles.append(articles[i])
+
+    return selected_articles
+
 		
 def get_latest_dump():
 
@@ -68,7 +84,11 @@ def get_latest_dump():
     items = get_items(dom)
 
     print "\nFinished loading ", len(items), " articles\n"
-            
+
+    items = deduplicate(items)
+
+    print "\nAfter deduplication ", len(items), " articles\n"  
+
     return items	
 	
 
@@ -83,6 +103,10 @@ def collect_last_dumps():
         items.extend(get_items(dom))
 
     print "\nFinished loading ", len(items), " articles\n"
+
+    items = deduplicate(items)
+
+    print "\nAfter deduplication ", len(items), " articles\n"
 
     return items
 
