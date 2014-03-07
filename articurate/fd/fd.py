@@ -23,6 +23,8 @@ from readability.readability import Document
 from articurate.metrics import metrics
 from articurate.pymotherlode.api import *
 
+from articurate.utils.config import *
+
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
 SERVER_URL = "http://localhost:9999/"
@@ -171,12 +173,13 @@ def genSnapshot(interval):
     logger.setLevel(logging.INFO)
 
     # get RSS sources from the web
-    #rss_sources_json = getRSSSources()
-    #rss_sources_2 = rss_sources_json['rss']
-
+    if config['db.coldStart']:
+        rss_sources_json = getRSSSources()
+        rss_sources = rss_sources_json['rss']
     #Example of getting a function output by key
-    rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
-    rss_sources = rss_sources_json['rss']
+    else:
+        rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
+        rss_sources = rss_sources_json['rss']
 
     #print rss_sources
 
