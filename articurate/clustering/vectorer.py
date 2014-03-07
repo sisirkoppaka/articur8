@@ -8,6 +8,9 @@ import math
 import numpy
 import json
 
+from articurate.metrics import metrics
+
+
 IDF = {} # to make script faster
 unique_tokens_dict = {} # unique_token["token"] = id
 unique_tokens = [] # list of tokens
@@ -102,6 +105,12 @@ def extend_stopwords(stopwords, area): # adds more stopwords as required
     
     return stopwords
 
+@metrics.track_by("tech")
+def get_stopwords():
+    # list of stopwords
+    stopwords = nltk.corpus.stopwords.words('english') 
+    stopwords = extend_stopwords(stopwords, 'technology')
+    return stopwords
 
 def cleanify_text(text): # converts text to tokens 
 
@@ -109,8 +118,9 @@ def cleanify_text(text): # converts text to tokens
     lmtzr = WordNetLemmatizer() 
 
     # list of stopwords
-    stopwords = nltk.corpus.stopwords.words('english') 
-    stopwords = extend_stopwords(stopwords, 'technology')
+    #stopwords = nltk.corpus.stopwords.words('english') 
+    #stopwords = extend_stopwords(stopwords, 'technology')
+    stopwords = get_stopwords()
     
     # tokenize article (makes list of words), make everything smallcaps, and lemmatize it (keeps only stems, eg: 'winning' to 'win')        
     tokens = [lmtzr.lemmatize(w.lower()) for w in nltk.word_tokenize(text.encode("utf-8"))]
