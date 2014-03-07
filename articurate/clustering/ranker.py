@@ -28,7 +28,7 @@ def rank_formula(cluster):
 
 	value1 = math.log(1.1 + cluster.metrics['avg_named_entities'])
 	value2 = math.log(cluster.metrics['num_articles'])
-	value3 = cluster.metrics['avg_distance_from_center']*10
+	value3 = cluster.metrics['avg_distance_from_center']*10+0.1
 
 	if cluster.metrics['num_articles'] == 1:
 		return 0

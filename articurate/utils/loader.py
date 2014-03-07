@@ -56,8 +56,6 @@ def get_items(dom):
         except:
             pass
 
-    print "Finished loading ", len(items), " articles\n"
-
     return items
 		
 		
@@ -68,6 +66,8 @@ def get_latest_dump():
     dom = parseString(xml_content) # parse xml string
 
     items = get_items(dom)
+
+    print "\nFinished loading ", len(items), " articles\n"
             
     return items	
 	
@@ -81,6 +81,8 @@ def collect_last_dumps():
     for xml_content in xml_content_list:
         dom = parseString(xml_content)
         items.extend(get_items(dom))
+
+    print "\nFinished loading ", len(items), " articles\n"
 
     return items
 

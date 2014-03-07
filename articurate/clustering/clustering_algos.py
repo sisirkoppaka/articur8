@@ -14,47 +14,6 @@ import fastcluster
 
 import nimfa
 
-def cluster_gaac(vectors, num_clusters):
-
-
-    """ Takes in vectors and clusters them using Group Average Agglomerative clustering with cosine distance.
-
-    Inputs:
-    vectors -- matrix containing rows of vectors
-    num_clusters -- number of clusters to create
-
-    """
-
-    print "Starting GAAC clustering"
-    
-    start_time = time.time()
-
-    distance = spatial.distance.pdist(vectors, 'cosine')
-
-    linkage = fastcluster.linkage(distance, method="weighted")
-
-    clustdict = {i:[i] for i in xrange(len(linkage)+1)}
-    for i in xrange(len(linkage)-num_clusters+1):
-        clust1= int(linkage[i][0])
-        clust2= int(linkage[i][1])
-        clustdict[max(clustdict)+1] = clustdict[clust1] + clustdict[clust2]
-        del clustdict[clust1], clustdict[clust2]
-
-    # generate the assignment list (vector -> cluster id)
-    assignment = [-1]*len(vectors)
-
-    count = 0
-    for key in clustdict:
-        value = clustdict[key]
-        for item in value:
-            assignment[item] = count
-        count = count + 1
-
-    end_time = time.time()
-    print "Clustering required", (end_time-start_time),"seconds"
-
-    return assignment
-
 
 def cluster_nmf(vectors, rank):
 
@@ -101,6 +60,49 @@ def cluster_nmf(vectors, rank):
     print "Clustering required", (end_time-start_time),"seconds"
 
     return assignment
+
+
+def cluster_gaac(vectors, num_clusters):
+
+
+    """ Takes in vectors and clusters them using Group Average Agglomerative clustering with cosine distance.
+
+    Inputs:
+    vectors -- matrix containing rows of vectors
+    num_clusters -- number of clusters to create
+
+    """
+
+    print "Starting GAAC clustering"
+    
+    start_time = time.time()
+
+    distance = spatial.distance.pdist(vectors, 'cosine')
+
+    linkage = fastcluster.linkage(distance, method="weighted")
+
+    clustdict = {i:[i] for i in xrange(len(linkage)+1)}
+    for i in xrange(len(linkage)-num_clusters+1):
+        clust1= int(linkage[i][0])
+        clust2= int(linkage[i][1])
+        clustdict[max(clustdict)+1] = clustdict[clust1] + clustdict[clust2]
+        del clustdict[clust1], clustdict[clust2]
+
+    # generate the assignment list (vector -> cluster id)
+    assignment = [-1]*len(vectors)
+
+    count = 0
+    for key in clustdict:
+        value = clustdict[key]
+        for item in value:
+            assignment[item] = count
+        count = count + 1
+
+    end_time = time.time()
+    print "Clustering required", (end_time-start_time),"seconds"
+
+    return assignment
+
 
 
 def cluster_kmeans(vectors, num_clusters, distance_metric = "cosine"):
