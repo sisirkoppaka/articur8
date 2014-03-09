@@ -3,6 +3,7 @@ from __future__ import division
 import numpy, scipy, math
 from datetime import datetime
 from scipy.spatial.distance import cosine as scipy_cos_dist
+import itertools
 
 import vectorer
 import ranker
@@ -110,6 +111,63 @@ def get_cluster_metrics(cluster_objects):
         cluster.metrics['oldest_publishing_time'] = oldest_pub_time    
 
 
+def remove_duplicate_clusters(clusters, closeness_threshold = 0.75):
+
+    # indices of clusters to be kept for sure and ignored for sure
+    ignored_list = []
+    keep_list = []
+
+    # compute distance between clusters
+    vectors = [cluster.closest_article.tfidf_vector for cluster in clusters]
+    distance = spatial.distance.pdist(vectors, 'cosine')
+
+    # sort according to distance, closest first
+    sorted_distances = sorted(distance)
+    sorted_order = [i[0] for i in sorted(enumerate(distance), key=lambda x:x[1])]
+
+    indices = list(itertools.combinations(range(len(vectors)),2))
+
+    # time to compare and keep/ignore what's to be kept/ignored
+    for index, item in enumerate(sorted_order):
+        
+        i = indices[item][0]
+        j = indices[item][1]
+
+        if sorted_distances[index] <= closeness_threshold:
+
+            # time to remove one of the clusters
+            # keep the one that would be ranked higher
+            if i < j:
+                to_keep = i
+                to_ignore = j
+            else:
+                to_keep = j
+                to_ignore = i
+
+            ignored_list.append(to_ignore)
+
+            if to_keep not in ignored_list: # keep only if not previously ignored when compared to even higher ranked cluster
+                keep_list.append(to_keep)
+
+            #else:
+            #    print "Previously ignored:: ", clusters[to_keep].closest_article.title
+            #print sorted_distances[index]
+            #print clusters[to_keep].closest_article.title
+            #print "Ignoring:: ", clusters[to_ignore].closest_article.title
+            #print "\n\n"
+
+        else:
+            break
+
+    # remove stuff that might have been ignored but was in keep_list (for cyclic cases?)
+    # this might be useless
+    ignored_list = [index for index in ignored_list if index not in keep_list]
+
+    # return stuff that won
+    output_clusters = [clusters[index] for index in range(len(clusters)) if index not in ignored_list]
+
+    return output_clusters
+
 @metrics.track    
 def cluster(articles, params):
    
@@ -132,6 +190,9 @@ def cluster(articles, params):
 
     # rank the cluster objects based on metrics
     cluster_objects = ranker.rank_clusters(cluster_objects)
+
+    # remove duplicate clusters
+    cluster_objects = remove_duplicate_clusters(cluster_objects)
 
     return {'clusters': cluster_objects, 'assignment': assignment}
 

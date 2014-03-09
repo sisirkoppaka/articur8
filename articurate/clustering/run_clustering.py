@@ -21,11 +21,17 @@ result = clusterer.cluster(articles, params)
 
 # print output
 for cluster in result['clusters']:
-	value1 = math.log(1.1 + cluster.metrics['avg_named_entities'])
-	value2 = math.log(cluster.metrics['num_articles'])
-	value3 = cluster.metrics['avg_distance_from_center']+10+0.1
-	score = value1 * value2 / (value3*value3)
-	print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n", value1, value2, value3, score, "\n", cluster.metrics
+	
+	#value1 = math.log(1.1 + cluster.metrics['avg_named_entities'])
+	#value2 = math.log(cluster.metrics['num_articles'])
+	#value3 = cluster.metrics['avg_distance_from_center']*10+0.1
+	#value3 = math.exp(cluster.metrics['avg_distance_from_center']*10+0.1)
+
+	#score = value1 * value2 / value3
+
+	#print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n", value1, value2, value3, score, "\n", cluster.metrics
+
+	print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n"
 
 # stores a copy of the cluster in JSON in the motherlode, with or without content
 #clusterformats.clustersToJSON(articles, result['assignment']) #Deprecated
