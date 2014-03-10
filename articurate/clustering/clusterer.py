@@ -244,4 +244,8 @@ def cluster(articles, params):
 
     return {'clusters': cluster_objects, 'assignment': assignment}
 
+    # find robust clusters, supported by both clustering methods
+    #result['combined'] = clusterer.find_robust_clusters(result)    
+
+
     
