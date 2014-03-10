@@ -14,28 +14,21 @@ import math
 articles = loader.collect_last_dumps()
 
 # define parameters
-params = ParamObj(100, 'nmf', True) # (num_clusters, clustering_method, only_titles)
+params = {}
+params['nmf'] = ParamObj(100, 'nmf', True) # (num_clusters, clustering_method, only_titles)
+params['gaac'] = ParamObj(100, 'gaac', True)
 
 # get clusters, result has assignment list and cluster objects
-result = clusterer.cluster(articles, params)
+result = {}
+result['nmf'] = clusterer.cluster(articles, params['nmf'])
+#result['gaac'] = clusterer.cluster(articles, params['gaac'])
+
+# find robust clusters, supported by both clustering methods
+#result['combined'] = clusterer.find_robust_clusters(result)
 
 # print output
-for cluster in result['clusters']:
-	
-	#value1 = math.log(1.1 + cluster.metrics['avg_named_entities'])
-	#value2 = math.log(cluster.metrics['num_articles'])
-	#value3 = cluster.metrics['avg_distance_from_center']*10+0.1
-	#value3 = math.exp(cluster.metrics['avg_distance_from_center']*10+0.1)
-
-	#score = value1 * value2 / value3
-
-	#print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n", value1, value2, value3, score, "\n", cluster.metrics
-
-	print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n"
+#for cluster in result['nmf']['clusters']:
+#	print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n"
 
 # stores a copy of the cluster in JSON in the motherlode, with or without content
-#clusterformats.clustersToJSON(articles, result['assignment']) #Deprecated
-clusterformats.clustersToJSONNew(result['clusters']) #Deprecated
-
-#cluster = api.getMetric("articurate.clustering.clusterer.cluster")
-#print "from metrics", cluster['assignment']
+clusterformats.clustersToJSONNew(result['nmf']['clusters']) #Deprecated

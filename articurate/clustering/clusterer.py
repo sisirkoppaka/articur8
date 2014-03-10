@@ -168,6 +168,54 @@ def remove_duplicate_clusters(clusters, closeness_threshold = 0.75):
 
     return output_clusters
 
+
+def find_robust_clusters(result):
+
+    clusters = {}
+    clusters['nmf'] = result['nmf']['clusters']
+    clusters['gaac'] = result['gaac']['clusters']
+
+    # nmf across height, gaac across width
+    h = len(clusters['nmf'])
+    w = len(clusters['gaac'])
+
+    print h, w
+
+    # time to compare each pair of clusters
+    difference_list = [] # (i, j, {(in i, not in j) + (in j, not in i)} / (m+n))
+
+    indices = list(itertools.combinations(range(max(h, w)),2))
+    for index in indices:
+        if index[0] < h: # take only the valid ones
+            
+            i = index[0]
+            j = index[1]
+
+            in_i = clusters['nmf'][i].article_list
+            in_j = clusters['gaac'][j].article_list
+
+            in_i_not_j = sum([1 for item in in_i if item not in in_j])
+            in_j_not_i = sum([1 for item in in_j if item not in in_i])
+
+            set_diff_value = (in_i_not_j + in_j_not_i) / (len(in_i) + len(in_j))
+
+            difference_list.append((i, j, set_diff_value))
+
+    sorted_diff = sorted(difference_list, key=lambda x:x[2])
+
+    for i in range(0, 10):
+        print sorted_diff[i][2]
+        
+        for item in clusters['nmf'][sorted_diff[i][0]].article_list:
+            print item.title
+
+        print "-------"
+
+        for item in clusters['gaac'][sorted_diff[i][1]].article_list:
+            print item.title
+
+        print "\n\n"
+
 @metrics.track    
 def cluster(articles, params):
    
