@@ -25,6 +25,9 @@ from articurate.pymotherlode.api import *
 
 from articurate.utils.config import *
 
+from celery_tasks import *
+
+
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
 SERVER_URL = "http://localhost:9999/"
@@ -291,9 +294,12 @@ def startFD(interval):
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
     
     # below gets stuff in time range of (currentTime) minutes to (currentTime - interval) minutes
-    genSnapshot(interval)
+    #genSnapshot(interval)
+
+    run_fd.delay(interval)
 
 if __name__ == "__main__":
     #startFD()
     print "Deprecated: Please use 'fab runFD' to run FeedDigger."
+    run_fd.delay()
 
