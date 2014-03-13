@@ -33,19 +33,23 @@ def cluster_nmf(vectors, rank):
     # Change this later and see which is best
     vectors_matrix = numpy.matrix(vectors)
     vectors_matrix = vectors_matrix.transpose()
-    
+    print "Created vectors_matrix"
+
     # Generate random matrix factors which we will pass as fixed factors to Nimfa.
     init_W = numpy.random.rand(vectors_matrix.shape[0], rank)
     init_H = numpy.random.rand(rank, vectors_matrix.shape[1])
+    print "Generated random matrix factors"
 
     fctr = nimfa.mf(vectors_matrix, method = "nmf", seed = "fixed", W = init_W, H = init_H, rank = rank)
     fctr_res = nimfa.mf_run(fctr)
+    print "NIMFA"
 
     # Basis matrix
     W = fctr_res.basis()
 
     # Mixture matrix
     H = fctr_res.coef()
+    print "Extracted Basis and Mixture matrices"
 
     # get assignments
     assignment = []
@@ -53,6 +57,8 @@ def cluster_nmf(vectors, rank):
         column = list(H[:, index])
         assignment.append(column.index(max(column)))
 
+    print "Assignments extracted"
+    
     # Print the loss function (Euclidean distance between target matrix and its estimate). 
     print "Euclidean distance: %5.3e" % fctr_res.distance(metric = "euclidean")
 
