@@ -116,6 +116,10 @@ def parse_source_celery(source, sourceCount):
     except AttributeError:
         logger.info("AttributeError while fetching "+str(source.xmlUrl))        
         return 'False'
+    except RuntimeError:
+        logger.info("RuntimeError while fetching "+str(source.xmlUrl))        
+        return 'False'        
+
 
 
 @celery.task
