@@ -19,6 +19,8 @@ from articurate.metrics import metrics
 from celery import current_task
 from celery.utils.log import get_task_logger
 
+from articurate.utils.config import *
+
 import simplejson as json
 
 logger = get_task_logger(__name__)
@@ -33,8 +35,11 @@ def run_nertag():
 
     try:
         print "run_nertag: starting ", ner_types
-
-        all_content = [article.content for count, article in enumerate(articles)]
+        
+        if config['nertag.content']:
+            all_content = [article.content for count, article in enumerate(articles)]
+        else:
+            all_content = [article.title for count, article in enumerate(articles)]            
 
         result = chord(parse_NER_celery.s(article, count, ner_types) for count, article in enumerate(all_content))(save_celery.s(kwargs={'ner_types': ner_types}))
         

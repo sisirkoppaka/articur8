@@ -6,3 +6,5 @@ fd.coldStartWindowSize: 640 # Minutes back into past that feeds should be dug on
 clusterFormats.insertContent: TRUE # Should full content be inserted in the JSON of the Cluster?
 
 db.coldStart: FALSE #If TRUE, uses original fallbacks instead of DB where ever possible. Turn this off once you want to switch to DB completely.
+
+nertag.content: TRUE #If TRUE, runs nertagger on content, else only on titles
