@@ -2,6 +2,7 @@
 
 import requests
 import jsonpickle
+import string
 import redis
 from articurate.utils.config import *
 
@@ -66,9 +67,25 @@ def getAllCacheDumps():
 	for key in keys:
 		values.append(getDeltaDump(key))
 
-	print "Got so many keys ", len(values)
+	print "Got so many dumps ", len(values)
 
 	return values
 
+def getAllDumps():
+
+	# try to get the key cache
+	r_server = redis.StrictRedis(host='localhost',port=6379, db=0)
+
+	keys = r_server.keys('dumps:delta:*')
+	timestamps = [ key[string.rfind(key, ':')+1:] for key in keys]
+
+	# collect all dumps
+	values = []
+	for timestamp in timestamps:
+		values.append(getDeltaDump(timestamp))
+
+	print "Got so many dumps ", len(values)
+
+	return values
 
 

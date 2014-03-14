@@ -19,6 +19,8 @@ from articurate.metrics import metrics
 from celery import current_task
 from celery.utils.log import get_task_logger
 
+from articurate.pymotherlode import api
+
 import simplejson as json
 
 logger = get_task_logger(__name__)
@@ -27,7 +29,9 @@ logger = get_task_logger(__name__)
 def run_nertag():
 
     # get latest dump of articles
-    articles = article_loader.get_latest_dump()
+    articles = article_loader.get_all_dumps()
+
+    print "Got so many articles: ", len(articles)
 
     ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']    
 
@@ -51,22 +55,34 @@ def save_celery(results, **kwargs):
         
     ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
    
-    # save result to file
-    final_dict = {}
+    # get what is currently present in redis db
+    final_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery"))
+    if final_dict == None:
+        final_dict = {}
+
     for item in ner_types:
-        value = []
+        value = final_dict[item] if item in final_dict else []
         for dictionary in results:
             value.extend(dictionary[item])
         value = list(set(value))
-        final_dict[item] = value    
+        final_dict[item] = value 
+
+    # # save result to file
+    # final_dict = {}
+    # for item in ner_types:
+    #     value = []
+    #     for dictionary in results:
+    #         value.extend(dictionary[item])
+    #     value = list(set(value))
+    #     final_dict[item] = value    
                
     ner_file = open("nertagger.log",'w')
     ner_file.write(json.dumps(final_dict, indent="  "))
     ner_file.close()        
 
     print "save_celery: done! "
-    return json.dumps(final_dict, indent="  ")
     
+    return json.dumps(final_dict, indent="  ")
 
 
 @celery.task
