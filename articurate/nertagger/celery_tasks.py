@@ -29,7 +29,7 @@ logger = get_task_logger(__name__)
 def run_nertag():
 
     # get latest dump of articles
-    articles = article_loader.get_all_dumps()
+    articles = article_loader.get_latest_dump()
 
     print "Got so many articles: ", len(articles)
 

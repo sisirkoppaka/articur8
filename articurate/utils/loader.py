@@ -87,8 +87,8 @@ def get_all_dumps():
 def get_latest_dump():
 
     xml_content = getLatestDeltaDump() # get from redis
-
-    items = get_items_from_xml_list(xml_content)
+    
+    items = get_items_from_xml_list([xml_content])
 
     return items	
 	
@@ -96,7 +96,7 @@ def get_latest_dump():
 def collect_last_dumps():
 
     xml_content_list = getAllCacheDumps() 
-
+    
     items = get_items_from_xml_list(xml_content_list)
 
     return items
