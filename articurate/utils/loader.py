@@ -75,19 +75,20 @@ def deduplicate(articles):
     return selected_articles
 
 		
+def get_all_dumps():
+
+    xml_content_list = getAllDumps() 
+
+    items = get_items_from_xml_list(xml_content_list)
+
+    return items
+
+
 def get_latest_dump():
 
     xml_content = getLatestDeltaDump() # get from redis
-
-    dom = parseString(xml_content) # parse xml string
-
-    items = get_items(dom)
-
-    print "\nFinished loading ", len(items), " articles\n"
-
-    items = deduplicate(items)
-
-    print "\nAfter deduplication ", len(items), " articles\n"  
+    
+    items = get_items_from_xml_list([xml_content])
 
     return items	
 	
@@ -95,12 +96,22 @@ def get_latest_dump():
 def collect_last_dumps():
 
     xml_content_list = getAllCacheDumps() 
+    
+    items = get_items_from_xml_list(xml_content_list)
+
+    return items
+
+
+def get_items_from_xml_list(xml_content_list):
 
     items = []
 
     for xml_content in xml_content_list:
-        dom = parseString(xml_content)
-        items.extend(get_items(dom))
+        try:
+            dom = parseString(xml_content)
+            items.extend(get_items(dom))
+        except:
+            pass
 
     print "\nFinished loading ", len(items), " articles\n"
 
