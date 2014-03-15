@@ -1,0 +1,186 @@
+/*
+ * Import nib
+ */
+/*
+ * Grab a custom font from Google
+ */
+@import url("http://fonts.googleapis.com/css?family=Delius+Swash+Caps");
+/*
+ * Nib provides a CSS reset
+ */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+body {
+  line-height: 1;
+  color: #000;
+  background: #fff;
+}
+ol,
+ul {
+  list-style: none;
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  vertical-align: middle;
+}
+caption,
+th,
+td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+a img {
+  border: none;
+}
+/*
+ * Store the main color and
+ * background color as variables
+ */
+body {
+  font-family: 'Optima';
+  background-color: #e6e6e6;
+  color: #444;
+}
+header {
+  font-family: 'Delius Swash Caps', cursive;
+  padding: 10px 10px;
+  color: #fff;
+  font-size: 25px;
+  text-align: center;
+/*
+   * Note the use of the `main-color`
+   * variable and the `darken` function
+   */
+  background-color: #000;
+  border-bottom: 1px solid #000;
+  text-shadow: 0px -1px 0px #000;
+}
+.container {
+  width: 500px;
+  margin: 25px auto;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.main-content {
+  float: left;
+  width: 500px;
+}
+.main-content p {
+  margin-bottom: 20px;
+}
+.sidebar .widget {
+/*
+     * Note the lack of vendor
+     * prefixes here. Nib will
+     * add them for us
+     */
+  -webkit-border-radius: 15px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  margin: 25px auto;
+  background-color: #faf9f0;
+  -webkit-box-shadow: inset 0px 0px 0px 1px rgba(0,0,0,0.7), 0px 6px 0px -10px rgba(0,0,0,0.1);
+  box-shadow: inset 0px 0px 0px 1px rgba(0,0,0,0.7), 0px 6px 0px -10px rgba(0,0,0,0.1);
+}
+.sidebar .widget h1 {
+  font-family: 'Optima';
+  font-weight: bold;
+  margin: 4px 10px 4px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.sidebar .widget h1 a {
+  border-bottom: 1px dotted;
+  text-decoration: none;
+}
+.sidebar .widget h1 a:hover {
+  border-bottom: 1px solid;
+  text-decoration: none;
+}
+.sidebar .widget h5 {
+  margin: 13px 10px 4px;
+  margin-bottom: 4px;
+}
+.sidebar .widget p {
+  font-size: 13px;
+  padding: 0px 10px;
+  margin-bottom: 4px;
+}
+p {
+  line-height: 1.8;
+}
+footer {
+  width: 500px;
+  margin: 50px auto;
+  margin-top: 10px;
+  border-top: 1px dotted #ccc;
+  padding-top: 5px;
+  font-size: 13px;
+}
