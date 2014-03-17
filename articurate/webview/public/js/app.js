@@ -6,8 +6,9 @@
         var clusters = [];
         for(var i = 0; i < clusterList.length; i++){
           var article = clusterList[i].closest_article;
+          var num_articles = clusterList[i].articles.length;
           var short_title = (article.title.length > 100) ? article.title.substr(0, 100).concat(' ...') : article.title;
-          clusters.push({index: i+1, title: short_title, url: article.link, text: article.content.substr(0, 200)})
+          clusters.push({index: i+1, title: short_title, url: article.link, num_articles: num_articles, text: article.content.substr(0, 200)})
         }
         return clusters;
     }
@@ -32,8 +33,8 @@
 
     //define individual news item view
     var NewsItemView = Backbone.View.extend({
-        tagName: "article",
-        className: "newsItem-container",
+        tagName: "li",
+        className: "table-view-cell",
         template: $("#newsItemTemplate").html(),
 
         render: function () {
