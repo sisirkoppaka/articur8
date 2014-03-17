@@ -26,17 +26,13 @@ app.use(stylus.middleware(
 }));
 app.use(express.static(__dirname + '/public'))
 
-/*
-app.get('/clusters/latest/', function (req, res) {
-  	client.get("clusters:latest",function(err,value){
-		res.type('text/html');
-		res.render('index',
- 		 { title : 'articulate',
- 		   clusterJSON : value
- 		 });
+
+app.get('/clusters/latest/json/',function(req,res) {
+	client.get("clusters:latest",function(err,value){
+		res.type('application/json');
+		res.send(value);
 	});
 });
-*/
 
 //GET /
 app.get('/', function(req,res) {

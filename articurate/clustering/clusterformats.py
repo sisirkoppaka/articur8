@@ -74,7 +74,10 @@ def clustersToJSONNew(clusters):
 				#And Without
 				articlesInCluster.append({'title':article.title, 'feed_title':article.feed_title, 'link':article.link, 'author':article.author, 'lede':lede, 'updated_at':article.updated_at})
 
-		clustersForHumans.append({'cluster': i,'articles':articlesInCluster})
+		article = cluster.closest_article;
+		closest_article = {'title':article.title, 'feed_title':article.feed_title, 'link':article.link, 'author':article.author, 'lede':lede, 'content':article.content, 'updated_at':article.updated_at}
+
+		clustersForHumans.append({'cluster': i, 'closest_article': closest_article, 'articles':articlesInCluster})
 
 	storeCluster(json.dumps(clustersForHumans),tag)
 
