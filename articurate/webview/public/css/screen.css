@@ -1,1 +1,12 @@
-﻿.newsItem-container { float:center; font-family:sans-serif; }
+.circle {
+    width: 10px;
+    height: 10px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    margin-right: 11px;
+    padding: 0;
+    background: rgba(11,211,24,0.5);
+    border:1px solid;
+    border-color: rgba(11,211,24,0.6);
+}

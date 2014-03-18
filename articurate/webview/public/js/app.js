@@ -8,7 +8,7 @@
           var article = clusterList[i].closest_article;
           var num_articles = clusterList[i].articles.length;
           var short_title = (article.title.length > 100) ? article.title.substr(0, 100).concat(' ...') : article.title;
-          clusters.push({index: i+1, title: short_title, url: article.link, num_articles: num_articles, text: article.content.substr(0, 200)})
+          clusters.push({color: "#4CD964", index: i+1, title: short_title, url: article.link, num_articles: num_articles, text: article.content.substr(0, 200)})
         }
         return clusters;
     }
@@ -42,7 +42,19 @@
 
             $(this.el).html(tmpl(this.model.toJSON()));
             return this;
+        },
+
+        //add ui events
+        events: {
+            "click .navigate-right": "makeRed"
+        },
+
+        //change color of indicator
+        makeRed: function (e) {
+            this.$el.find("#indicator").css("background", "rgba(255,19,0,0.5)");
+            this.$el.find("#indicator").css("border-color", "rgba(255,19,0,0.6)");
         }
+
     });
 
     //define master view

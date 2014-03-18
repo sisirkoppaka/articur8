@@ -13,6 +13,7 @@
 
 
         <link href="css/ratchet.css" rel="stylesheet">
+        <link href="css/screen.css" rel="stylesheet">
         <script src="js/ratchet.js"></script>
 
     </head>
@@ -33,7 +34,8 @@
 
         <!-- Template for each news item -->
         <script id="newsItemTemplate" type="text/template">
-              <a class="navigate-right" href='<%= url %>'> <span class="badge"><%= num_articles %></span> <%= title %> </a>
+          <a target="_blank" class="navigate-right" href='<%= url %>'>  <span class="badge"><%= num_articles %></span> <table><tr><td><div id="indicator" class="circle"></div></td><td> <%= title %> </td></tr></table></a>
+
         </script>
 
         <!--<div id="news"></div>-->
