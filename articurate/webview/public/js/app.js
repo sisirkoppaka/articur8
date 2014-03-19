@@ -99,9 +99,28 @@
             this;
             this.$el.find("#indicator").css("background", "rgba(255,19,0,0.5)");
             this.$el.find("#indicator").css("border-color", "rgba(255,19,0,0.6)");
+
+            // cookie time
             var current_cookie = readCookie('articurateCookie');
-            //alert($(e.currentTarget).attr('id'));
-            var new_cookie = current_cookie + ',' + $(e.currentTarget).attr('id');
+
+            // shorten cookie if needed
+            var cookie_list = current_cookie.split(',');
+            alert(cookie_list.length);
+            var threshold = 100;
+            if(cookie_list.length == threshold){
+                var short_cookie = cookie_list[1];
+                for(var i = 2; i < threshold; i++){
+                  short_cookie = short_cookie + ',' + cookie_list[i];
+                }
+                current_cookie = short_cookie;
+            }
+
+            // extend the readList
+            if(current_cookie.length == 0)
+                new_cookie = $(e.currentTarget).attr('id');
+            else
+                new_cookie = current_cookie + ',' + $(e.currentTarget).attr('id');
+
             createCookie('articurateCookie', new_cookie, 1);
         }
 
