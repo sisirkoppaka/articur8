@@ -34,8 +34,7 @@
 
         <!-- Template for each news item -->
         <script id="newsItemTemplate" type="text/template">
-          <a target="_blank" class="navigate-right" href='<%= url %>'>  <span class="badge"><%= num_articles %></span> <table><tr><td><div id="indicator" class="circle"></div></td><td> <%= title %> </td></tr></table></a>
-
+          <a id='<%= hash %>' class="navigate-right" href='<%= url %>'>  <span class="badge"><%= num_articles %></span> <table><tr><td><div id="indicator" class="circle" style="<%= color%>"></div></td><td> <%= title %> </td></tr></table></a>
         </script>
 
         <!--<div id="news"></div>-->

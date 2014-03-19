@@ -1,6 +1,7 @@
 """Clusters for Humans"""
 
 import itertools
+import hashlib
 import simplejson as json
 from articurate.pymotherlode.api import *
 
@@ -66,7 +67,7 @@ def clustersToJSONNew(clusters):
 	for i, cluster in enumerate(clusters):
 		articlesInCluster = []
 		for j, article in enumerate(cluster.article_list):
-			lede = getLede(article.content)			
+			lede = getLede(article.content)
 			if insertContent:
 				#With Content
 				articlesInCluster.append({'title':article.title, 'feed_title':article.feed_title, 'link':article.link, 'author':article.author, 'lede':lede, 'content':article.content, 'updated_at':article.updated_at})
@@ -75,9 +76,13 @@ def clustersToJSONNew(clusters):
 				articlesInCluster.append({'title':article.title, 'feed_title':article.feed_title, 'link':article.link, 'author':article.author, 'lede':lede, 'updated_at':article.updated_at})
 
 		article = cluster.closest_article;
+
+		hash_string = article.title + " " + article.feed_title + " " + article.author
+		hash_value = hashlib.md5(hash_string.encode('utf-8')).hexdigest()
+
 		closest_article = {'title':article.title, 'feed_title':article.feed_title, 'link':article.link, 'author':article.author, 'lede':lede, 'content':article.content, 'updated_at':article.updated_at}
 
-		clustersForHumans.append({'cluster': i, 'closest_article': closest_article, 'articles':articlesInCluster})
+		clustersForHumans.append({'cluster': i, 'hash': hash_value,'closest_article': closest_article, 'articles':articlesInCluster})
 
 	storeCluster(json.dumps(clustersForHumans),tag)
 
