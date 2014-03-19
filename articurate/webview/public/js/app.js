@@ -105,8 +105,7 @@
 
             // shorten cookie if needed
             var cookie_list = current_cookie.split(',');
-            alert(cookie_list.length);
-            var threshold = 100;
+            var threshold = 200;
             if(cookie_list.length == threshold){
                 var short_cookie = cookie_list[1];
                 for(var i = 2; i < threshold; i++){
