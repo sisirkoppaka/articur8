@@ -1,4 +1,5 @@
 import math
+import time
 
 def rank_clusters(cluster_objects):
 
@@ -16,7 +17,7 @@ def rank_clusters(cluster_objects):
 
 
 def rank_formula(cluster):
-	
+
 	""" Our formula to score each cluster """
 
 	# avg_named_entities
@@ -26,15 +27,19 @@ def rank_formula(cluster):
 	# avg_distance_from_center
 	# average_publishing_time
 
-	value1 = math.log(1.1 + cluster.metrics['avg_named_entities'])
-	value2 = math.log(cluster.metrics['num_articles'])
+  	# get current time
+  	current_time = int(time.time())
+
+	named_entities = math.log(1.1 + cluster.metrics['avg_named_entities'])
+	cluster_size = math.log(cluster.metrics['num_articles'])
 	#value3 = cluster.metrics['avg_distance_from_center']*10+0.1
-	value3 = math.exp(cluster.metrics['avg_distance_from_center']*10+0.1)
+	spread = math.exp(cluster.metrics['avg_distance_from_center']*10+0.1)
+	time_decay = math.exp(cluster.metrics['average_publishing_time'] / current_time);
 
 	if cluster.metrics['num_articles'] == 1:
 		return 0
 	else:
-		return value1 * value2 / value3
+		return named_entities * cluster_size / spread * time_decay
 
 	#return math.log(cluster.metrics['avg_named_entities'] + 2) * math.log(cluster.metrics['num_articles'] + 1) / (cluster.metrics['avg_pairwise_dist']+0.5)
 	#return  1/(cluster.metrics['avg_pairwise_dist']+0.5)
