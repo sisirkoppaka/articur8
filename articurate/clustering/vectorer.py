@@ -195,9 +195,12 @@ def vectorize_articles(articles, only_titles = True, use_SVD = False, boost_ne =
     print "Creating vectors"
     vectors = []
 
-    # get the NER list 
-    ne_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery")) if boost_ne else {}
-
+    # get the NER list
+    try: 
+        ne_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery")) if boost_ne else {}
+    except:
+        ne_dict = {}
+        
     for count, item in enumerate(texts):
         
         if count % 100 == 0:
