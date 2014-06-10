@@ -63,6 +63,7 @@ def save_celery(results, **kwargs):
     try:
         final_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery"))
     except:
+        final_dict = None
         pass
 
     if final_dict == None:
