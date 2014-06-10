@@ -11,12 +11,12 @@ import clusterformats
 from clustering_algos import *
 
 from articurate.metrics import metrics
-from articurate.utils.class_definitions import ClusterObj     
-             
-def print_cluster_means(cluster_means, unique_tokens): 
+from articurate.utils.class_definitions import ClusterObj
+
+def print_cluster_means(cluster_means, unique_tokens):
 
     """ Given list of vectors and corresponding token list, prints the words in vector
-    
+
     """
 
     for count, array in enumerate(cluster_means):
@@ -25,7 +25,7 @@ def print_cluster_means(cluster_means, unique_tokens):
         print count, " : ",
         for index in top_indices:
             print unique_tokens[index],
-        print ""    
+        print ""
 
 
 def cluster_articles(vectors, num_clusters, method):
@@ -39,7 +39,7 @@ def cluster_articles(vectors, num_clusters, method):
         assignment = cluster_nmf(vectors, num_clusters)
 
     return assignment
-    
+
 
 def get_cluster_objects(articles, assignment):
 
@@ -67,12 +67,12 @@ def get_cluster_objects(articles, assignment):
 
         # find article closest to center
         if len(distances) > 0:
-            closest_article_in_cluster = articles_in_cluster[distances.index(min(distances))]    
+            closest_article_in_cluster = articles_in_cluster[distances.index(min(distances))]
         else:
             closest_article_in_cluster = None
 
         # create the cluster object
-        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster)) 
+        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster))
 
     return cluster_obj_list
 
@@ -99,16 +99,16 @@ def get_cluster_metrics(cluster_objects):
 
         # fourth metric: average publishing time of articles in cluster
         cluster_timestamps = [int(datetime.strptime(article.updated_at, '%Y-%m-%d %H:%M:%S').strftime('%s')) for article in cluster.article_list]
-        avg_pub_time = sum(cluster_timestamps)/len(cluster_timestamps) 
+        avg_pub_time = sum(cluster_timestamps)/len(cluster_timestamps)
         cluster.metrics['average_publishing_time'] = avg_pub_time
 
         # fifth metric: publishing time of newest article in cluster
         newest_pub_time = max(cluster_timestamps)
-        cluster.metrics['newest_publishing_time'] = newest_pub_time    
+        cluster.metrics['newest_publishing_time'] = newest_pub_time
 
         # sixth metric: publishing time of oldest article in cluster
         oldest_pub_time = min(cluster_timestamps)
-        cluster.metrics['oldest_publishing_time'] = oldest_pub_time    
+        cluster.metrics['oldest_publishing_time'] = oldest_pub_time
 
 
 def remove_duplicate_clusters(clusters, closeness_threshold = 0.75):
@@ -129,7 +129,7 @@ def remove_duplicate_clusters(clusters, closeness_threshold = 0.75):
 
     # time to compare and keep/ignore what's to be kept/ignored
     for index, item in enumerate(sorted_order):
-        
+
         i = indices[item][0]
         j = indices[item][1]
 
@@ -187,7 +187,7 @@ def find_robust_clusters(result):
     indices = list(itertools.combinations(range(max(h, w)),2))
     for index in indices:
         if index[0] < h: # take only the valid ones
-            
+
             i = index[0]
             j = index[1]
 
@@ -205,7 +205,7 @@ def find_robust_clusters(result):
 
     for i in range(0, 10):
         print sorted_diff[i][2]
-        
+
         for item in clusters['nmf'][sorted_diff[i][0]].article_list:
             print item.title
 
@@ -216,13 +216,13 @@ def find_robust_clusters(result):
 
         print "\n\n"
 
-@metrics.track    
+@metrics.track
 def cluster(articles, params):
-   
+
     # parse the parameters
     num_clusters = params.num_clusters
     clustering_method = params.clustering_method
-    only_titles = params.only_titles	
+    only_titles = params.only_titles
 
     # convert articles to tf-idf vectors
     IDF, unique_tokens_dict, unique_tokens, vectors = vectorer.vectorize_articles(articles, only_titles)
@@ -245,7 +245,4 @@ def cluster(articles, params):
     return {'clusters': cluster_objects, 'assignment': assignment}
 
     # find robust clusters, supported by both clustering methods
-    #result['combined'] = clusterer.find_robust_clusters(result)    
-
-
-    
+    #result['combined'] = clusterer.find_robust_clusters(result)
