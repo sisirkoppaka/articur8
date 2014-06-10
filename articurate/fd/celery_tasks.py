@@ -207,6 +207,8 @@ def save_fd(results, **kwargs):
                     pass   
         except UnicodeEncodeError:
                 pass
+        except IndexError: #Verify
+                pass
         except AttributeError:
                 pass
         except ValueError:
