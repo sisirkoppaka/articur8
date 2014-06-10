@@ -60,7 +60,11 @@ def save_celery(results, **kwargs):
     ner_types = ['ORGANIZATION', 'LOCATION', 'PERSON']
    
     # get what is currently present in redis db
-    final_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery"))
+    try:
+        final_dict = json.loads(api.getMetric("articurate.nertagger.celery_tasks.save_celery"))
+    except:
+        pass
+
     if final_dict == None:
         final_dict = {}
 
