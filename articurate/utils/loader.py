@@ -66,7 +66,7 @@ def deduplicate(articles):
     for i in range(0, len(articles)):
         ignore = False
         for j in range(0, len(articles)):
-            if i != j and articles[i].title == articles[j].title and articles[i].feed_title == articles[j].feed_title and articles[i].updated_at < articles[j].updated_at:
+            if i != j and articles[i].title == articles[j].title and articles[i].feed_title == articles[j].feed_title and articles[i].updated_at <= articles[j].updated_at:
                 ignore = True
                 break
         if not ignore:

@@ -26,6 +26,9 @@ result = clusterer.cluster(articles, params)
 # print output
 for cluster in result['clusters']:
 	print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n"
+	#for article in cluster.article_list:
+	#	print article.feed_title, article.updated_at, article.title
+	#print "\n\n"
 
 # stores a copy of the cluster in JSON in the motherlode, with or without content
 clusterformats.clustersToJSONNew(result['clusters']) #Deprecated
