@@ -91,7 +91,7 @@
 
         //add ui events
         events: {
-            "click .navigate-right": "makeRed"
+            "click .table-view-cell": "makeRed"
         },
 
         //change color of indicator

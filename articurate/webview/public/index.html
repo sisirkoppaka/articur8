@@ -9,12 +9,11 @@
 
         <title>Articurate</title>
 
-        <!--<link rel="stylesheet" href="css/screen.css" />-->
-
-
         <link href="css/ratchet.css" rel="stylesheet">
         <link href="css/screen.css" rel="stylesheet">
         <script src="js/ratchet.js"></script>
+      
+        <!-- Google Analytics script -->
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -24,7 +23,9 @@
           ga('create', 'UA-51819223-1', 'articur8.com');
           ga('send', 'pageview');
         </script>
+
     </head>
+
     <body>
 
         <!-- Make sure all your bars are the first things in your <body> -->
@@ -35,14 +36,26 @@
         <!-- Wrap all non-bar HTML in the .content div (this is actually what scrolls) -->
         <div class="content">
             <div class="card">
-                <ul id="news" class="table-view">
+                <ul  id="news" class="table-view">
                 </ul>
             </div>
         </div>
 
         <!-- Template for each news item -->
         <script id="newsItemTemplate" type="text/template">
-          <a target="_blank" id='<%= hash %>' class="navigate-right" href='<%= url %>'>  <span class="badge"><%= num_articles %></span> <table><tr><td><div id="indicator" class="circle" style="<%= color%>"></div></td><td> <%= title %> </td></tr></table></a>
+            
+            <a 
+                target="_blank" id='<%= hash %>' class="table-view-cell" href='<%= url %>'> 
+                <table>
+                    <tr>
+                        <td><div id="indicator" class="circle" style="<%= color%>"></div></td>
+                        <td> <%= title %> </td>
+                    </tr>
+                </table>
+            </a>  
+            <span class="badge" >
+                <%= num_articles %>
+            </span>
         </script>
 
         <!--<div id="news"></div>-->
