@@ -727,8 +727,10 @@ input[type="button"] {
 .table-view-cell {
   position: relative;
   overflow: hidden;
-  padding: 11px 65px 11px 15px;
-  border-bottom: 1px solid #dddddd;
+  padding: 11px 15px 11px 15px;
+  /*border-bottom: 1px solid #dddddd;*/
+  border-bottom: 1px solid white;
+  border-color: white;
 }
 .table-view-cell:last-child {
   border-bottom: 0;

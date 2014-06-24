@@ -8,3 +8,22 @@
     padding: 0;
     border:1px solid;
 }
+
+a:link {color: black;}      /* unvisited link */
+a:visited {color: black;}   /* visited link */
+a:hover {color: black;}     /* mouse over link */
+a:active {color: black;}    /* selected link */
+
+.table-view-cell{
+
+  /*background: -webkit-linear-gradient(left, #A4E786, white); /* For Safari 5.1 to 6.0 */
+  /*background: -o-linear-gradient(right, #A4E786, white); /* For Opera 11.1 to 12.0 */
+  /*background: -moz-linear-gradient(right, #A4E786, white); /* For Firefox 3.6 to 15 */
+  /*background: linear-gradient(to right, #A4E786, white); /* Standard syntax */
+
+  background: -webkit-linear-gradient(left, #FF5E3A, white); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #FF5E3A, white); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #FF5E3A, white); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #FF5E3A, white); /* Standard syntax */
+
+}
