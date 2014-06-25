@@ -7,14 +7,13 @@
         <!-- Sets initial viewport load and disables zooming  -->
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 
-        <title>articur8: news you need</title>
+        <title>articur8</title>
 
-        <link href="css/ratchet.css" rel="stylesheet">
-        <link href="css/screen.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/ratchet.css">
+        <link rel="stylesheet" href="css/screen.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
 
         <script src="js/ratchet.js"></script>
-
 
         <!-- Google Analytics script -->
         <script>
@@ -40,6 +39,12 @@
         <div class="content">
             <div class="card">
                 <ul id="news" class="table-view" style="border-color:white;margin:0;padding:0;">
+
+                    <!-- Log for debugging purposes -->
+                    <!-- <li id="log" class="table-view-cell"> </li> -->
+
+                    <!-- The news items will be inserted here based on template below -->
+
                 </ul>
             </div>
         </div>
@@ -47,36 +52,25 @@
         <!-- Template for each news item -->
         <script id="newsItemTemplate" type="text/template">
 
-            <div id="test" style="float:left;vertical-align:middle;margin:0;padding:0;width:90%;height:100%;">
-                <a style="float:left; border-bottom:none;margin:0;padding:0;width:100%;" target="_blank" id='<%= hash %>'  href='<%= url %>'>
+            <div style="float:left;vertical-align:middle;margin:0;padding:0;width:90%;height:100%;">
+                <a type="article_link" style="float:left; border-bottom:none;margin:0;padding:0;width:100%;" target="_blank" id='<%= hash %>'  href='<%= url %>'>
                     <%= title %>
                 </a>
 
             </div>
-            <a id="test" href="https://www.google.com/" target="_blank" style="text-align:right; width:5%;vertical-align:middle;float:right;display:inline-block; border-bottom:none;margin:0;padding:0;">
+            <a type="cluster_link" href="https://www.google.com/" target="_blank" style="text-align:right; width:5%;vertical-align:middle;float:right;display:inline-block; border-bottom:none;margin:0;padding:0;">
                 <i style="margin:auto;" class="fa fa-angle-right fa-lg"></i>
             </a>
         </script>
 
-        <!--
-        <table>
-            <tr>
-                <td><div id="indicator" class="circle" style="<%= color%>"></div></td>
-                <td> <%= title %> </td>
-            </tr>
-        </table>
-        -->
 
-        <!--<div id="news"></div>-->
-
-        <!--<script id="newsItemTemplate" type="text/template">
-            <p><%=index %>) <a href='<%= url %>'><%= title %></a></p>
-        </script>-->
-
+        <!-- Other required scripts -->
         <script src="js/jquery-1.7.1.min.js"></script>
         <script src="js/json2.js"></script>
         <script src="js/underscore-min.js"></script>
         <script src="js/backbone-min.js"></script>
+
+        <!-- Backbone app -->
         <script src="js/app.js"></script>
     </body>
 </html>

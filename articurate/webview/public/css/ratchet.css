@@ -691,8 +691,9 @@ input[type="button"] {
   overflow: hidden;
   margin: 10px;
   background-color: white;
-  border: 1px solid #dddddd;
-  border-radius: 6px;
+  /*border: 1px solid #dddddd;
+  border-radius: 6px;*/
+  border: 1px solid white;
 }
 
 .card .table-view {
@@ -720,8 +721,10 @@ input[type="button"] {
   margin-bottom: 15px;
   list-style: none;
   background-color: #fff;
-  border-top: 1px solid #dddddd;
-  border-bottom: 1px solid #dddddd;
+  /*border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;*/
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
 }
 
 .table-view-cell {
@@ -730,7 +733,7 @@ input[type="button"] {
   padding: 11px 15px 11px 15px;
   /*border-bottom: 1px solid #dddddd;*/
   border-bottom: 1px solid white;
-  border-color: white;
+  /*border-color: white;*/
 }
 .table-view-cell:last-child {
   border-bottom: 0;
@@ -758,8 +761,10 @@ input[type="button"] {
   margin-left: 0;
   color: #999;
   font-weight: 500;
-  border-top: 1px solid #dddddd;
-  border-bottom: 1px solid #dddddd;
+  /*border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;*/
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
   background-color: #fafafa;
 }
 
