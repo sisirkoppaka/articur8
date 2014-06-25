@@ -118,10 +118,10 @@
                 // for debugging purposes
                 //$("#log").html("clicked: " + e.target.nodeName + ", " + e.target.id + ", " + grandparent.prop('tagName'));
 
-                grandparent.css('background','-webkit-linear-gradient(left, #FF5E3A, white)');
-                grandparent.css('background','-o-linear-gradient(right, #FF5E3A, white)');
-                grandparent.css('background','-moz-linear-gradient(right, #FF5E3A, white)');
-                grandparent.css('background','linear-gradient(to right, #FF5E3A, white);');
+                grandparent.css('background','-webkit-linear-gradient(left, #FF9780, #FFF5F2)');
+                grandparent.css('background','-o-linear-gradient(right, #FF9780, #FFF5F2)');
+                grandparent.css('background','-moz-linear-gradient(left, #FF9780, #FFF5F2)');
+                grandparent.css('background','linear-gradient(to right, #FF9780, #FFF5F2);');
 
                 // cookie time
                 var current_cookie = readCookie('articurateCookie');
