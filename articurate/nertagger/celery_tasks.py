@@ -31,7 +31,7 @@ def run_nertag():
 
     # get latest dump of articles
     #articles = article_loader.get_latest_dump()
-    articles = article_loader.getAllDumps()
+    articles = article_loader.get_all_dumps()
 
     print "Got so many articles: ", len(articles)
 
