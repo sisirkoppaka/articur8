@@ -58,6 +58,13 @@ def get_cluster_objects(articles, assignment):
         # get the mean vector for this cluster
         cluster_mean = numpy.mean(vectors_in_cluster, axis=0)
 
+        # get the named entities in this cluster
+        named_entities = []
+        for article in articles_in_cluster:
+            named_entities.extend(article.named_entities)
+        NE = list(set(named_entities))
+        NE.sort(key = lambda x:named_entities.count(x))
+
         # find distance of each article in this cluster from the cluster mean
         distances = []
         for index, article in enumerate(articles_in_cluster):
@@ -72,7 +79,7 @@ def get_cluster_objects(articles, assignment):
             closest_article_in_cluster = None
 
         # create the cluster object
-        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster))
+        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster, NE))
 
     return cluster_obj_list
 

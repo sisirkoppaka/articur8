@@ -36,21 +36,23 @@ class ClusterObj:
     closest_article: the member of cluster closest to the cluster center
     avg_pairwise_dist: average pairwise distance between articles in cluster
     article_list: list of article ids that belong to cluster
+    NE_list: list of all named entities in cluster, sorted by frequency
 
     """
 
-    def __init__(self, identifier, center, closest_article, article_list):
+    def __init__(self, identifier, center, closest_article, article_list, NE):
 
         self.identifier = identifier
         self.center = center
         self.closest_article = closest_article
         self.article_list = article_list if len(article_list) > 0 else []
+        self.NE_list = NE
 
         # metrics
         self.metrics = {}
 
     def __str__(self):
-        return "<identifier: %s, center: %s, closest_article: %s, article_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.article_list)    
+        return "<identifier: %s, center: %s, closest_article: %s, article_list: %s, NE_list: %s>\n" % (self.identifier, self.center, self.closest_article, self.article_list, self.NE_list)    
  
  
 class ParamObj:

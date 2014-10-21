@@ -1,14 +1,13 @@
-from articurate.pymotherlode.api import *
-import articurate.utils.loader as loader
+import jsonpickle
+import math
 
 import clusterer, clusterformats
-
 from articurate.pymotherlode import api
-import jsonpickle
+from articurate.pymotherlode.api import *
+import articurate.utils.loader as loader
 from articurate.utils.class_definitions import ParamObj     
 from articurate.utils.config import *
 
-import math
 
 # get articles from wherever
 #articles = loader.get_latest_dump()
@@ -25,7 +24,7 @@ result = clusterer.cluster(articles, params)
 
 # print output
 for cluster in result['clusters']:
-	print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, "\n"
+	print cluster.identifier, ":", len(cluster.article_list), ":", cluster.closest_article.title, ":", cluster.NE_list, "\n"
 	#for article in cluster.article_list:
 	#	print article.feed_title, article.updated_at, article.title
 	#print "\n\n"

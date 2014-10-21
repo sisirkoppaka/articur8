@@ -79,8 +79,8 @@ def main(load_flag = 0):
         twitter_list = []
 
 
-    rss_size = len(rss_list)
-    twitter_size = len(twitter_list)
+    current_rss_size = len(rss_list)
+    current_twitter_size = len(twitter_list)
 
     # get data from url now
     old_links = [item[0] for item in rss_list]
@@ -94,8 +94,8 @@ def main(load_flag = 0):
 
     print rss_list
     print twitter_list
-    print 'Added %d items to rss_list' %(len(rss_list) - rss_size)
-    print 'Added %d items to twitter_list' %(len(twitter_list) - twitter_size)
+    print 'Added %d items to rss_list' %(len(rss_list) - current_rss_size)
+    print 'Added %d items to twitter_list' %(len(twitter_list) - current_twitter_size)
 
     # save data to files
     data['rss_list']     = rss_list
