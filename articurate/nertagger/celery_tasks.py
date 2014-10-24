@@ -104,56 +104,59 @@ def parse_NER_celery(document, articleCount, ner_types):
     for item in ner_types:
         result[item] = []
 
+    try:
+    	# split text into sentences
+        sentenceEnders = re.compile('[.!?]')
+        sentences = sentenceEnders.split(document)
+        total = len(sentences)
+    	
+    	#initialize paths
+        englishPath = os.path.join(os.path.join(os.path.dirname(articurate.__file__),'nertagger'),'english.all.3class.distsim.crf.ser.gz')
+        stanfordNERPath = os.path.join(os.path.join(os.path.dirname(articurate.__file__),'nertagger'),'stanford-ner.jar')
+    	
+    	# initialize tagger
+        st = NERTagger(englishPath, stanfordNERPath)
+       
+    	# tag each sentence
+        for count, sentence in enumerate(sentences):
+            print "%d:%d/%d"%(articleCount, count, len(sentences))
+            tags = st.tag(sentence.encode('utf-8').split())
 
-	# split text into sentences
-    sentenceEnders = re.compile('[.!?]')
-    sentences = sentenceEnders.split(document)
-    total = len(sentences)
-	
-	#initialize paths
-    englishPath = os.path.join(os.path.join(os.path.dirname(articurate.__file__),'nertagger'),'english.all.3class.distsim.crf.ser.gz')
-    stanfordNERPath = os.path.join(os.path.join(os.path.dirname(articurate.__file__),'nertagger'),'stanford-ner.jar')
-	
-	# initialize tagger
-    st = NERTagger(englishPath, stanfordNERPath)
-   
-	# tag each sentence
-    for count, sentence in enumerate(sentences):
-        print "%d:%d/%d"%(articleCount, count, len(sentences))
-        tags = st.tag(sentence.encode('utf-8').split())
+            if len(tags) < 2:
+                continue
 
-        if len(tags) < 2:
-            continue
+            previous_tag = tags[0][1]
+            string = tags[0][0].lower()
+            index = 1
+            while index < len(tags):
+                current_tag = tags[index][1]
 
-        previous_tag = tags[0][1]
-        string = tags[0][0].lower()
-        index = 1
-        while index < len(tags):
-            current_tag = tags[index][1]
+                
+                if current_tag == previous_tag:
+                    string = string + " " + tags[index][0].lower()
+                else:
+                    if previous_tag in ner_types:
+                        value = result[previous_tag]                   
+                        value.append(string.lower())
+                        result[previous_tag] = value            
+                    string = tags[index][0].lower()
 
-            
-            if current_tag == previous_tag:
-                string = string + " " + tags[index][0].lower()
-            else:
-                if previous_tag in ner_types:
-                    value = result[previous_tag]                   
-                    value.append(string.lower())
-                    result[previous_tag] = value            
-                string = tags[index][0].lower()
+                previous_tag = current_tag
+                index = index + 1        
 
-            previous_tag = current_tag
-            index = index + 1        
+            if previous_tag in ner_types:
+                value = result[previous_tag]                   
+                value.append(string.lower())
+                result[previous_tag] = value
 
-        if previous_tag in ner_types:
-            value = result[previous_tag]                   
-            value.append(string.lower())
-            result[previous_tag] = value
+        # convert to set
+        for item in ner_types:
+            value = result[item]
+            value = list(set(value))
+            result[item] = value
 
-    # convert to set
-    for item in ner_types:
-        value = result[item]
-        value = list(set(value))
-        result[item] = value
+    except:
+        pass
 
     print "Article number done:", articleCount, "\n"
     return result
