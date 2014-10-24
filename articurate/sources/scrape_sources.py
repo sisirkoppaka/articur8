@@ -63,13 +63,12 @@ def get_feeds(old_links, url):
 # get_feeds() ends
 
 
-def main(load_flag = 0):
+def scrape_sources(keyword, url):
 
-    url = 'http://techmeme.com/'
-    save_file = 'feed_list.dat'
+    save_file = 'feed_lists/%s_feed_list.dat' % keyword
 
     # load data from the previous run
-    if load_flag and os.path.isfile(save_file):
+    if os.path.isfile(save_file):
         data = pickle.load(open(save_file, 'rb' )) 
         rss_list     = data['rss_list']
         twitter_list = data['twitter_list']
@@ -94,25 +93,25 @@ def main(load_flag = 0):
 
     print rss_list
     print twitter_list
-    print 'Added %d items to rss_list' %(len(rss_list) - current_rss_size)
-    print 'Added %d items to twitter_list' %(len(twitter_list) - current_twitter_size)
+    print '%s::Added %d items to rss_list' %(keyword, len(rss_list) - current_rss_size)
+    print '%s::Added %d items to twitter_list' %(keyword, len(twitter_list) - current_twitter_size)
 
     # save data to files
     data['rss_list']     = rss_list
     data['twitter_list'] = twitter_list
     pickle.dump(data, open(save_file, 'wb'))
 
-# main() ends
+# scrape_sources() ends
 
 
 if __name__ == '__main__':
 
-    args = sys.argv[1:]
+    streams = {}
+    streams['tech']  = 'http://techmeme.com/';
+    streams['media'] = 'http://www.mediagazer.com/';
 
-    if args:
-        main(0)
-    else:
-        main(1)
+    for key, url in streams.iteritems():
+        scrape_sources(key, url)
 
 
 

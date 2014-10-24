@@ -206,10 +206,11 @@ def vectorize_articles(articles, only_titles = True, use_SVD = False, boost_ne =
 
     # get a list of unique tokens, and recreate reverse dictionary
     unique_tokens = list(set(collection))
-    # crop unique tokens
+    # # crop unique tokens
     # cropped_unique_tokens = []
     # for term in unique_tokens:
     #     if DF[term] > 1:
+    #         print term, DF[term]
     #         cropped_unique_tokens.append(term)
     # unique_tokens = cropped_unique_tokens
 
