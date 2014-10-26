@@ -64,6 +64,13 @@ def get_cluster_objects(articles, assignment):
             named_entities.extend(article.named_entities)
         NE = list(set(named_entities))
         NE.sort(key = lambda x:named_entities.count(x))
+        cropped_NE = []
+        for item in NE:
+            if named_entities.count(item) >= len(articles_in_cluster) * 0.75:
+                cropped_NE.append(item)
+
+        print NE, cropped_NE
+        NE = cropped_NE
 
         # find distance of each article in this cluster from the cluster mean
         distances = []
@@ -98,8 +105,8 @@ def get_cluster_metrics(cluster_objects):
         cluster.metrics['avg_distance_from_center'] = avg_distance_from_center
 
         # second metric: average number of named entities per title in cluster
-        avg_num_ne = sum([article.num_ne for article in cluster.article_list]) / len(cluster.article_list)
-        cluster.metrics['avg_named_entities'] = avg_num_ne
+        #avg_num_ne = sum([article.num_ne for article in cluster.article_list]) / len(cluster.article_list)
+        cluster.metrics['avg_named_entities'] = len(cluster.NE_list)
 
         # third metric: number of articles in cluster
         cluster.metrics['num_articles'] = len(cluster.article_list)
