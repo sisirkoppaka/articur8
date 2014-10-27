@@ -2,7 +2,7 @@
 <opml version="1.1">
 <head>
 	<title>media sources</title>
-	<dateModified>2014-10-26 05:22:16</dateModified>
+	<dateModified>2014-10-27 02:38:07</dateModified>
 </head>
 <body>
 	<outline text="SlashGear" type="rss" htmlUrl="www.slashgear.com" xmlUrl="http://www.slashgear.com/feed/"/>
@@ -141,5 +141,19 @@
 	<outline text="Comments on: Home" type="rss" htmlUrl="firstlook.org" xmlUrl="https://firstlook.org/home/feed/"/>
 	<outline text="TheHill" type="rss" htmlUrl="thehill.com" xmlUrl="http://thehill.com/rss.xml"/>
 	<outline text="Techmeme" type="rss" htmlUrl="www.techmeme.com" xmlUrl="http://www.techmeme.com/feed.xml"/>
+	<outline text="PandoDaily" type="rss" htmlUrl="pando.com" xmlUrl="http://pando.com/rss.xml"/>
+	<outline text="Groupthink" type="rss" htmlUrl="groupthink.jezebel.com" xmlUrl="http://groupthink.jezebel.com/rss"/>
+	<outline text="RSS Feed" type="rss" htmlUrl="www.multichannel.com" xmlUrl="http://www.multichannel.com/rss.xml%20"/>
+	<outline text="Stories from Slate" type="rss" htmlUrl="slate.com" xmlUrl="http://www.slate.com/all.fulltext.all.rss"/>
+	<outline text="BetaNews" type="rss" htmlUrl="betanews.com" xmlUrl="http://betanews.com/feed/"/>
+	<outline text="TORONTO STAR" type="rss" htmlUrl="www.thestar.com" xmlUrl="http://www.thestar.com/feeds.topstories.rss"/>
+	<outline text="RSS Feed" type="rss" htmlUrl="multichannel.com" xmlUrl="http://multichannel.com/rss.xml%20"/>
+	<outline text="globeandmail - Home" type="rss" htmlUrl="www.theglobeandmail.com" xmlUrl="http://www.theglobeandmail.com/?service=rss"/>
+	<outline text="BetaNews" type="rss" htmlUrl="www.betanews.com" xmlUrl="http://betanews.com/feed/"/>
+	<outline text="VatorNews" type="rss" htmlUrl="vator.tv" xmlUrl="http://feeds.vator.tv/vatortv/news"/>
+	<outline text="Stories from Slate" type="rss" htmlUrl="www.slate.com" xmlUrl="http://www.slate.com/all.fulltext.all.rss"/>
+	<outline text="All - Digital Spy - Entertainment and Media News" type="rss" htmlUrl="www.digitalspy.co.uk" xmlUrl="http://www.digitalspy.co.uk/rss/zones/gb/all.xml"/>
+	<outline text="CBC | Top Stories News" type="rss" htmlUrl="www.cbc.ca" xmlUrl="http://rss.cbc.ca/lineup/topstories.xml"/>
+	<outline text="globeandmail - Home" type="rss" htmlUrl="www.globeandmail.com" xmlUrl="http://www.theglobeandmail.com/?service=rss"/>
 </body>
 </opml>

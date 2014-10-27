@@ -2,7 +2,7 @@
 <opml version="1.1">
 <head>
 	<title>tech sources</title>
-	<dateModified>2014-10-26 05:26:10</dateModified>
+	<dateModified>2014-10-27 02:40:40</dateModified>
 </head>
 <body>
 	<outline text="PandoDaily" type="rss" htmlUrl="pando.com" xmlUrl="http://pando.com/rss.xml"/>
@@ -321,5 +321,12 @@
 	<outline text="Twitpic Blog" type="rss" htmlUrl="blog.twitpic.com" xmlUrl="http://blog.twitpic.com/feed/"/>
 	<outline text="AndroidSPIN" type="rss" htmlUrl="androidspin.com" xmlUrl="http://androidspin.com/feed/"/>
 	<outline text="Virus Bulletin news" type="rss" htmlUrl="www.virusbtn.com" xmlUrl="http://www.virusbtn.com/library/feeds/vb_news.rdf"/>
+	<outline text="Philadelphia Magazine" type="rss" htmlUrl="www.phillymag.com" xmlUrl="http://www.phillymag.com/feed/"/>
+	<outline text="New on MIT Technology Review" type="rss" htmlUrl="www.technologyreview.com" xmlUrl="http://www.technologyreview.com/stream/rss/"/>
+	<outline text="6abc.com RSS Feed" type="rss" htmlUrl="6abc.com" xmlUrl="http://6abc.com/feed/"/>
+	<outline text="InvestorPlace" type="rss" htmlUrl="www.investorplace.com" xmlUrl="http://investorplace.com/feed/"/>
+	<outline text="SemiAccurate" type="rss" htmlUrl="semiaccurate.com" xmlUrl="http://semiaccurate.com/feed/"/>
+	<outline text="Breitbart Feed" type="rss" htmlUrl="www.breitbart.com" xmlUrl="http://feeds.feedburner.com/BreitbartFeed"/>
+	<outline text="PhoneNews.com" type="rss" htmlUrl="www.phonenews.com" xmlUrl="http://www.phonenews.com/feed/"/>
 </body>
 </opml>
