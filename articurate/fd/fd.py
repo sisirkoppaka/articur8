@@ -119,7 +119,13 @@ def getRSSSources():
     # add required sources
 
     # add techmeme sources
-    techmeme_sources = opml.parse('http://www.techmeme.com/lb.opml')
+    #techmeme_sources = opml.parse('http://www.techmeme.com/lb.opml')
+    
+    # load from the list on file
+    with open('../sources/feed_lists/tech_feed_list.opml', 'r') as fin:
+        opml_content = fin.read()
+    techmeme_sources = opml.parse(opml_content)
+
     for item in techmeme_sources:
         try:
             if hasattr(item, 'htmlUrl'):
@@ -168,34 +174,22 @@ def getEntryContent(entry): # gets whatever field information is present in entr
 def genSnapshot(interval):
     """dumps articles found in [currentTime-interval:currentTime] minutes"""
 
-    stringID = genStringID() # generates a unique ID based on time
+    stringID     = genStringID() # generates a unique ID based on time
     generated_on = datetime.utcnow()
 
     # set up python logger  
     logger = logging.getLogger("["+stringID+"]")
     logger.setLevel(logging.INFO)
 
-    # get RSS sources from the web
-    if config['db.coldStart']:
+    if config['db.coldStart']: # get RSS sources from the list on file
         rss_sources_json = getRSSSources()
-        rss_sources = rss_sources_json['rss']
-    #Example of getting a function output by key
-    else:
-        rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
-        rss_sources = rss_sources_json['rss']
+    else: # example of getting a function output by key
+        rss_sources_json = getRSSSources()
+        #rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
+        
+    rss_sources = rss_sources_json['rss']
 
-    #print rss_sources
-
-    #if rss_sources == rss_sources_2:
-    #    print "equal"
-    #else:
-    #    print "unequal"
-    #print rss_sources_2    
-    #Or this also works, but preferably use the above
-    #print getMetric("articurate.fd.fd.getRSSSources_tech")
-
-
-    logger.info("Num RSS sources "+str(len(rss_sources)))
+    logger.info("Num RSS sources " + str(len(rss_sources)))
     print "Num RSS sources = ", len(rss_sources)
 
     # create an xml tree
@@ -206,7 +200,7 @@ def genSnapshot(interval):
     head = SubElement(root, 'head')
 
     title = SubElement(head, 'title')
-    title.text = 'grep last '+str(interval)+' minutes '+stringID
+    title.text = 'grep last ' + str(interval) + ' minutes ' + stringID
     
     dc = SubElement(head, 'dateCreated')
     dc.text = str(generated_on)
@@ -216,7 +210,7 @@ def genSnapshot(interval):
     
     body = SubElement(root, 'body')
 
-    logger.info("Starting "+str(generated_on))
+    logger.info("Starting " + str(generated_on))
 
     num_added = 0
 

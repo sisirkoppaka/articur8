@@ -77,19 +77,20 @@ def run_fd(interval):
     logger = logging.getLogger("["+stringID+"]")
     logger.setLevel(logging.INFO)
 
-    # get RSS sources from the web
-    if config['db.coldStart']:
-        rss_sources_json = getRSSSources()
-        rss_sources = rss_sources_json['rss']
-    #Example of getting a function output by key
-    else:
-        rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
-        rss_sources = rss_sources_json['rss']
+    
+    if config['db.coldStart']: # get RSS sources from the list on file
+        rss_sources_json = getRSSSources() 
+    else: # example of getting a function output by key
+        rss_sources_json = getRSSSources() 
+        #rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
+        
+    rss_sources = rss_sources_json['rss']
 
     try:
-        all_rss_sources = [source for count, source in enumerate(rss_sources)]
 
+        all_rss_sources = [source for count, source in enumerate(rss_sources)]
         result = chord(parse_source_celery.s(source, count) for count, source in enumerate(all_rss_sources))(save_fd.s(kwargs={'ner_types': "hello"}))
+
     except:
         pass
     #print rss_sources

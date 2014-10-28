@@ -91,7 +91,7 @@ def tfidf(text, boost_ne, ne_dict = {}): # creates the tf-idf vector using the g
 
 def extend_stopwords(stopwords, area): # adds more stopwords as required
 
-    if area == 'technology':
+    if area == 'tech':
         stopwords.extend(['techcrunch', 'verge', 'allthingsd', 'engadget', 'gigaom', 'huffpost', 'wsj', 'bloomberg',
                       'businessweek', 'vogue', 'technica', '9to5mac', 'reuters', '9to5',
                       'cnet', 'zdnet', 'venturebeat', 'forbes', 
@@ -113,7 +113,7 @@ def get_stopwords():
     
     # list of stopwords
     stopwords = nltk.corpus.stopwords.words('english') 
-    stopwords = extend_stopwords(stopwords, 'technology')
+    stopwords = extend_stopwords(stopwords, 'tech')
     return stopwords
 
 
