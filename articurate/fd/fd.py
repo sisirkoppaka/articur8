@@ -114,6 +114,8 @@ def getRSSSources():
     """Gets all the RSS sources we want to mine from
     and returns a list of rss objects"""
 
+    print os.getcwd()
+
     rss_sources = []
 
     # add required sources
