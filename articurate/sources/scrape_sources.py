@@ -162,7 +162,11 @@ def create_opml(keyword, rss_list):
             # cancel timeout if feedfinder returned
             signal.alarm(0)
 
-            fout.write('\t<outline text="%s" type="rss" htmlUrl="%s" xmlUrl="%s"/>\n' %(feed['channel']['title'], item[0], item[1]))
+            title = feed['channel']['title']
+            title = title.replace('"', "'")
+            title = title.replace('&', '&amp;')
+
+            fout.write('\t<outline text="%s" type="rss" htmlUrl="%s" xmlUrl="%s"/>\n' %(title, item[0], item[1]))
         except:
             pass
 

@@ -20,8 +20,8 @@
 	<outline text="Adweek" type="rss" htmlUrl="www.adweek.com" xmlUrl="http://www.adweek.com/rss.xml"/>
 	<outline text="The Sydney Morning Herald News Headlines" type="rss" htmlUrl="www.smh.com.au" xmlUrl="http://feeds.smh.com.au/rssheadlines/top.xml"/>
 	<outline text="SFGate.com Blogs" type="rss" htmlUrl="blog.sfgate.com" xmlUrl="http://blog.sfgate.com/rss/"/>
-	<outline text="Legal Business | Legal news, updates, blogs and analysis" type="rss" htmlUrl="www.legalbusiness.co.uk" xmlUrl="http://www.legalbusiness.co.uk/index.php?format=feed&type=rss"/>
-	<outline text="Taxation: News & Information" type="rss" htmlUrl="www.taxationinfonews.com" xmlUrl="http://www.taxationinfonews.com/feed/"/>
+	<outline text="Legal Business | Legal news, updates, blogs and analysis" type="rss" htmlUrl="www.legalbusiness.co.uk" xmlUrl="http://www.legalbusiness.co.uk/index.php?format=feed&amp;type=rss"/>
+	<outline text="Taxation: News &amp; Information" type="rss" htmlUrl="www.taxationinfonews.com" xmlUrl="http://www.taxationinfonews.com/feed/"/>
 	<outline text="The Awl" type="rss" htmlUrl="www.theawl.com" xmlUrl="http://feeds2.feedburner.com/TheAwl"/>
 	<outline text="The Cut" type="rss" htmlUrl="nymag.com" xmlUrl="http://nymag.com/daily/fashion/excerpts.xml"/>
 	<outline text="CryptoCoinsNews" type="rss" htmlUrl="www.cryptocoinsnews.com" xmlUrl="http://www.cryptocoinsnews.com/feed/"/>
@@ -51,7 +51,7 @@
 	<outline text="RSS Feed" type="rss" htmlUrl="multichannel.com" xmlUrl="http://multichannel.com/rss.xml%20"/>
 	<outline text="TechCrunch" type="rss" htmlUrl="techcrunch.com" xmlUrl="http://techcrunch.com/feed/"/>
 	<outline text="Above the Law" type="rss" htmlUrl="abovethelaw.com" xmlUrl="http://feeds.feedburner.com/abovethelaw/"/>
-	<outline text="Pew Research Center's Internet & American Life Project" type="rss" htmlUrl="www.pewinternet.org" xmlUrl="http://www.pewinternet.org/feed/"/>
+	<outline text="Pew Research Center's Internet &amp; American Life Project" type="rss" htmlUrl="www.pewinternet.org" xmlUrl="http://www.pewinternet.org/feed/"/>
 	<outline text="Pocketnow" type="rss" htmlUrl="pocketnow.com" xmlUrl="http://pocketnow.com/feed"/>
 	<outline text="socalTECH.com - Southern California High Tech News" type="rss" htmlUrl="www.socaltech.com" xmlUrl="http://www.socaltech.com/news/news.rss"/>
 	<outline text="The Telegraph - Telegraph online, Daily Telegraph, Sunday Telegraph" type="rss" htmlUrl="www.telegraph.co.uk" xmlUrl="http://www.telegraph.co.uk/rss"/>
@@ -144,7 +144,7 @@
 	<outline text="Geek.com" type="rss" htmlUrl="www.geek.com" xmlUrl="http://www.geek.com/feed/"/>
 	<outline text="Windows Phone Central - News - Forums - Reviews - Help for Windows Phone" type="rss" htmlUrl="www.wpcentral.com" xmlUrl="http://www.wpcentral.com/rss"/>
 	<outline text="BGR" type="rss" htmlUrl="bgr.com" xmlUrl="http://bgr.com/feed/"/>
-	<outline text="Washington Post: Breaking News, World, US, DC News & Analysis" type="rss" htmlUrl="www.washingtonpost.com" xmlUrl="http://www.washingtonpost.com/rss/homepage"/>
+	<outline text="Washington Post: Breaking News, World, US, DC News &amp; Analysis" type="rss" htmlUrl="www.washingtonpost.com" xmlUrl="http://www.washingtonpost.com/rss/homepage"/>
 	<outline text="Re/code" type="rss" htmlUrl="recode.net" xmlUrl="http://recode.net/feed/"/>
 	<outline text="TechnoBuffalo" type="rss" htmlUrl="www.technobuffalo.com" xmlUrl="http://www.technobuffalo.com/feed/"/>
 	<outline text="Eurogamer.net" type="rss" htmlUrl="www.eurogamer.net" xmlUrl="http://www.eurogamer.net/?format=rss"/>
@@ -179,7 +179,7 @@
 	<outline text="IntoMobile" type="rss" htmlUrl="www.intomobile.com" xmlUrl="http://feeds.intomobile.com/IntoMobile"/>
 	<outline text="- Sport RSS Feed" type="rss" htmlUrl="www.independent.co.uk" xmlUrl="http://www.independent.co.uk/sport/rss"/>
 	<outline text="WordStream" type="rss" htmlUrl="www.wordstream.com" xmlUrl="http://www.wordstream.com/rss.xml"/>
-	<outline text="Broadcasting & Cable RSS Feed" type="rss" htmlUrl="www.broadcastingcable.com" xmlUrl="http://www.broadcastingcable.com/rss.xml"/>
+	<outline text="Broadcasting &amp; Cable RSS Feed" type="rss" htmlUrl="www.broadcastingcable.com" xmlUrl="http://www.broadcastingcable.com/rss.xml"/>
 	<outline text="AndroidGuys" type="rss" htmlUrl="www.androidguys.com" xmlUrl="http://www.androidguys.com/feed/"/>
 	<outline text="Mediagazer" type="rss" htmlUrl="mediagazer.com" xmlUrl="http://mediagazer.com/feed.xml"/>
 	<outline text="Beau Giles" type="rss" htmlUrl="beaugil.es" xmlUrl="https://beaugil.es/feed/"/>
@@ -208,7 +208,7 @@
 	<outline text="Lifehacker" type="rss" htmlUrl="lifehacker.com" xmlUrl="http://feeds.gawker.com/lifehacker/full"/>
 	<outline text="Billboard.com All Content" type="rss" htmlUrl="billboard.com" xmlUrl="http://billboard.com/rss.xml"/>
 	<outline text="Techdirt." type="rss" htmlUrl="www.techdirt.com" xmlUrl="http://www.techdirt.com/techdirt_rss.xml"/>
-	<outline text="Connectedly - The #1 community and resource focused on the connected world of smart devices, wearables, "The Internet of Things" and more!" type="rss" htmlUrl="www.connectedly.com" xmlUrl="http://www.connectedly.com/rss.xml"/>
+	<outline text="Connectedly - The #1 community and resource focused on the connected world of smart devices, wearables, 'The Internet of Things' and more!" type="rss" htmlUrl="www.connectedly.com" xmlUrl="http://www.connectedly.com/rss.xml"/>
 	<outline text="Eater -  All" type="rss" htmlUrl="www.eater.com" xmlUrl="http://www.eater.com/rss/index.xml"/>
 	<outline text="StreamingMedia.com RSS Feeds : All Articles" type="rss" htmlUrl="www.streamingmedia.com" xmlUrl="http://feeds.infotoday.com/StreamingMediaMagazine-AllArticles"/>
 	<outline text="SiliconBeatSiliconBeat | SiliconBeat" type="rss" htmlUrl="www.siliconbeat.com" xmlUrl="http://www.siliconbeat.com/feed/"/>
@@ -275,7 +275,7 @@
 	<outline text="Articles | Mail Online" type="rss" htmlUrl="www.dailymail.co.uk" xmlUrl="http://www.dailymail.co.uk/articles.rss"/>
 	<outline text="AndroidHeadlines.com |" type="rss" htmlUrl="www.androidheadlines.com" xmlUrl="http://www.androidheadlines.com/feed"/>
 	<outline text="Yahoo" type="rss" htmlUrl="yahoo.tumblr.com" xmlUrl="http://yahoo.tumblr.com/rss"/>
-	<outline text="Marketing Land - Internet Marketing News, Strategies & Tips" type="rss" htmlUrl="marketingland.com" xmlUrl="http://feeds.marketingland.com/mktingland"/>
+	<outline text="Marketing Land - Internet Marketing News, Strategies &amp; Tips" type="rss" htmlUrl="marketingland.com" xmlUrl="http://feeds.marketingland.com/mktingland"/>
 	<outline text="Cisco Blog" type="rss" htmlUrl="blogs.cisco.com" xmlUrl="http://blogs.cisco.com/feed/"/>
 	<outline text="CraveOnline" type="rss" htmlUrl="www.craveonline.com" xmlUrl="http://www.craveonline.com/feed"/>
 	<outline text="Valleywag" type="rss" htmlUrl="valleywag.gawker.com" xmlUrl="http://feeds.gawker.com/valleywag/full"/>
@@ -308,16 +308,16 @@
 	<outline text="galencharlton.com" type="rss" htmlUrl="galencharlton.com" xmlUrl="http://galencharlton.com/rss.xml"/>
 	<outline text="InvestorPlace" type="rss" htmlUrl="investorplace.com" xmlUrl="http://investorplace.com/feed/"/>
 	<outline text="Rafe's blurblog" type="rss" htmlUrl="rc3.org" xmlUrl="http://rafeco.newsblur.com/social/rss/31152/rafeco"/>
-	<outline text="Information Security News, IT Security News &amp; Expert Insights: SecurityWeek.Com" type="rss" htmlUrl="www.securityweek.com" xmlUrl="http://www.securityweek.com/rss.xml"/>
+	<outline text="Information Security News, IT Security News &amp;amp; Expert Insights: SecurityWeek.Com" type="rss" htmlUrl="www.securityweek.com" xmlUrl="http://www.securityweek.com/rss.xml"/>
 	<outline text="Canadianreviewer.com" type="rss" htmlUrl="www.canadianreviewer.com" xmlUrl="http://feeds.feedburner.com/canadianreviewer/nPFE"/>
 	<outline text="Tech Times : Top News" type="rss" htmlUrl="www.techtimes.com" xmlUrl="http://www.techtimes.com/rss/archives/archives.xml"/>
-	<outline text="Advertising Age - Ad Age Homepage" type="rss" htmlUrl="adage.com" xmlUrl="http://adage.com/rss-feed?section_id=301&xml=ATOM"/>
+	<outline text="Advertising Age - Ad Age Homepage" type="rss" htmlUrl="adage.com" xmlUrl="http://adage.com/rss-feed?section_id=301&amp;xml=ATOM"/>
 	<outline text="EETimes:" type="rss" htmlUrl="www.eetimes.com" xmlUrl="http://www.eetimes.com/rss_simple.asp"/>
 	<outline text="AWS News" type="rss" htmlUrl="s3-us-west-1.amazonaws.com" xmlUrl="http://aws.amazon.com/rss/whats-new.rss?nc1=f_so_rs"/>
 	<outline text="Articles Tom's Hardware" type="rss" htmlUrl="www.tomshardware.com" xmlUrl="http://www.tomshardware.com/rss.xml"/>
 	<outline text="KitGuru" type="rss" htmlUrl="www.kitguru.net" xmlUrl="http://www.kitguru.net/feed/"/>
 	<outline text="WCCFtech" type="rss" htmlUrl="wccftech.com" xmlUrl="http://feeds2.feedburner.com/Wccftechcom"/>
-	<outline text="News - The Salt Lake Tribune" type="rss" htmlUrl="www.sltrib.com" xmlUrl="http://www.sltrib.com/rss/feed/?sec=/News/&level=0"/>
+	<outline text="News - The Salt Lake Tribune" type="rss" htmlUrl="www.sltrib.com" xmlUrl="http://www.sltrib.com/rss/feed/?sec=/News/&amp;level=0"/>
 	<outline text="Twitpic Blog" type="rss" htmlUrl="blog.twitpic.com" xmlUrl="http://blog.twitpic.com/feed/"/>
 	<outline text="AndroidSPIN" type="rss" htmlUrl="androidspin.com" xmlUrl="http://androidspin.com/feed/"/>
 	<outline text="Virus Bulletin news" type="rss" htmlUrl="www.virusbtn.com" xmlUrl="http://www.virusbtn.com/library/feeds/vb_news.rdf"/>
