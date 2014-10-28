@@ -124,7 +124,7 @@ def getRSSSources():
     #techmeme_sources = opml.parse('http://www.techmeme.com/lb.opml')
     
     # load from the list on file
-    with open('../sources/feed_lists/tech_feed_list.opml', 'r') as fin:
+    with open('articurate/sources/feed_lists/tech_feed_list.opml', 'r') as fin:
         opml_content = fin.read()
     techmeme_sources = opml.parse(opml_content)
 
