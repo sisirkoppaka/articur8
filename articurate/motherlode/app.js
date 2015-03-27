@@ -6,9 +6,11 @@ var app = express()
   , nib = require('nib')
   , us = require('underscore');
 
-app.use(express.limit('15mb'));
-app.use(express.bodyParser());
+// deprecated mofo
+//app.use(express.limit('5120mb'));
+//app.use(express.bodyParser());
 app.use(express.logger('dev'))
+app.use(express.bodyParser({limit: '500mb'}));
 
 function compile(str, path) {
 	return stylus(str)
@@ -77,6 +79,29 @@ app.post('/dumps/delta/',function(req,res) {
 	client.set("dumps:delta:latest",req.body.timestamp);
 	client.rpush("dumps:delta:sorted",req.body.timestamp);
 	res.json(true);
+});
+
+//POST /dumps/delta
+app.post('/metrics/track/',function(req,res) {
+	if(!req.body.hasOwnProperty('method') || 
+ 	   !req.body.hasOwnProperty('methodPayload')) {
+		res.statusCode = 400;
+		return res.send('Error 400: Deltadumping API incorrect.');
+	}
+
+	client.set(("metrics:track:"+req.body.method),req.body.methodPayload);
+	//client.set("metrics:track:latest",req.body.timestamp);
+	client.sadd("metrics:track:set",req.body.method);
+	res.json(true);
+});
+
+//GET /dumps/delta/:timestamp
+app.get('/metrics/track/:method',function(req,res) {
+	client.get("metrics:track:"+req.params.method,function(err,value){
+		res.type('text/x-json');
+		console.log(value);
+		res.send(value);
+	});
 });
 
 app.post('/clusters/latest/',function(req,res) {

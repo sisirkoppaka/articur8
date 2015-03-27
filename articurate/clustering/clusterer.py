@@ -1,36 +1,23 @@
 from __future__ import division
-import re, pprint, numpy
-import time
-import math
 
-from nltk import cluster
-from nltk.cluster import euclidean_distance, cosine_distance
-from scipy import spatial
-from scipy.sparse import csr_matrix
-import fastcluster
-import nimfa
+import numpy, scipy, math
+from datetime import datetime
+from scipy.spatial.distance import cosine as scipy_cos_dist
+import itertools
 
 import vectorer
+import ranker
 import clusterformats
+from clustering_algos import *
 
-# TO DO:
-# 1) Give more weight to Noun
-# 4) Try PCA/SVD/NMF
+from articurate.metrics import metrics
+from articurate.utils.class_definitions import ClusterObj
 
-class ClusterObj: # class for each cluster
+def print_cluster_means(cluster_means, unique_tokens):
 
-    def __init__(self, identifier, center, spread_at_half, spread_at_full, closest_article, article_list):
+    """ Given list of vectors and corresponding token list, prints the words in vector
 
-        self.identifier = identifier
-        self.center = center
-        self.spread_at_half = spread_at_half
-        self.spread_at_full = spread_at_full
-        self.closest_article = closest_article
-        self.article_list = article_list
-      
-      
-       
-def print_cluster_means(cluster_means, unique_tokens): # displays top words in each mean
+    """
 
     for count, array in enumerate(cluster_means):
         indices = sorted(range(len(array)),key=lambda x:array[x])
@@ -38,125 +25,9 @@ def print_cluster_means(cluster_means, unique_tokens): # displays top words in e
         print count, " : ",
         for index in top_indices:
             print unique_tokens[index],
-        print ""    
-
-def cluster_means_from_assignment(vectors, assignment):
-
-    num_labels = len(set(assignment))
-
-    print assignment
-
-    cluster_means = []
-
-    for i in range(0, num_labels):
-        
-        indices = [j for j in range(len(assignment)) if assignment[j] == i]
-
-        print i, indices
-
-        cluster_vectors = numpy.array([vectors[j] for j in indices])
-
-        print numpy.mean(cluster_vectors, axis=0)
-        cluster_means.append(numpy.mean(cluster_vectors, axis=0))
-
-    return cluster_means
-        
-
-def cluster_nmf(vectors, rank):
-
-    print "Starting NMF clustering"
- 
-    start_time = time.time()
-    
-    # Run NMF.
-    # Change this later and see which is best
-    vectors_matrix = numpy.matrix(vectors)
-    vectors_matrix = vectors_matrix.transpose()
-    
-    # Generate random matrix factors which we will pass as fixed factors to Nimfa.
-    init_W = numpy.random.rand(vectors_matrix.shape[0], rank)
-    init_H = numpy.random.rand(rank, vectors_matrix.shape[1])
-
-    fctr = nimfa.mf(vectors_matrix, method = "nmf", seed = "fixed", W = init_W, H = init_H, rank = rank)
-    fctr_res = nimfa.mf_run(fctr)
-
-    # Basis matrix
-    W = fctr_res.basis()
-
-    # Mixture matrix
-    H = fctr_res.coef()
-
-    # get assignments
-    assignment = []
-    for index in range(H.shape[1]):
-        column = list(H[:, index])
-        assignment.append(column.index(max(column)))
-
-    # Print the loss function (Euclidean distance between target matrix and its estimate). 
-    print "Euclidean distance: %5.3e" % fctr_res.distance(metric = "euclidean")
-
-    end_time = time.time()
-    print "Clustering required", (end_time-start_time),"seconds"
-
-    return assignment
+        print ""
 
 
-def cluster_kmeans(vectors, num_clusters, distance_metric):
-
-    print "Starting KMeans clustering"
-    
-    start_time = time.time()
-
-    # initialize
-    if distance_metric == "euclidean":
-        clusterer = cluster.KMeansClusterer(num_clusters, euclidean_distance)
-    elif distance_metric == "cosine":
-        clusterer = cluster.KMeansClusterer(num_clusters, cosine_distance)
-
-    assignment = clusterer.cluster(vectors, True)
-    
-    end_time = time.time()
-    print "Clustering required", (end_time-start_time),"seconds"
-
-    return assignment
-
-
-def cluster_gaac(vectors, num_clusters):
-
-    print "Starting GAAC clustering"
-    
-    start_time = time.time()
-
-##    # nltk implementation might not be that good
-##    clusterer = cluster.GAAClusterer(num_clusters)
-##    assignment = clusterer.cluster(vectors, True)
-
-    distance = spatial.distance.pdist(vectors, 'cosine')
-
-    linkage = fastcluster.linkage(distance,method="complete")
-
-    clustdict = {i:[i] for i in xrange(len(linkage)+1)}
-    for i in xrange(len(linkage)-num_clusters+1):
-        clust1= int(linkage[i][0])
-        clust2= int(linkage[i][1])
-        clustdict[max(clustdict)+1] = clustdict[clust1] + clustdict[clust2]
-        del clustdict[clust1], clustdict[clust2]
-
-    # generate the assignment list (vector -> cluster id)
-    assignment = [-1]*len(vectors)
-
-    count = 0
-    for key in clustdict:
-        value = clustdict[key]
-        for item in value:
-            assignment[item] = count
-        count = count + 1
-
-    end_time = time.time()
-    print "Clustering required", (end_time-start_time),"seconds"
-
-    return assignment
-    
 def cluster_articles(vectors, num_clusters, method):
 
     # cluster the article vectors
@@ -168,7 +39,7 @@ def cluster_articles(vectors, num_clusters, method):
         assignment = cluster_nmf(vectors, num_clusters)
 
     return assignment
-    
+
 
 def get_cluster_objects(articles, assignment):
 
@@ -187,6 +58,20 @@ def get_cluster_objects(articles, assignment):
         # get the mean vector for this cluster
         cluster_mean = numpy.mean(vectors_in_cluster, axis=0)
 
+        # get the named entities in this cluster
+        named_entities = []
+        for article in articles_in_cluster:
+            named_entities.extend(article.named_entities)
+        NE = list(set(named_entities))
+        NE.sort(key = lambda x:named_entities.count(x))
+        cropped_NE = []
+        for item in NE:
+            if named_entities.count(item) >= len(articles_in_cluster) * 0.75:
+                cropped_NE.append(item)
+
+        print NE, cropped_NE
+        NE = cropped_NE
+
         # find distance of each article in this cluster from the cluster mean
         distances = []
         for index, article in enumerate(articles_in_cluster):
@@ -195,45 +80,183 @@ def get_cluster_objects(articles, assignment):
             article.cluster_id = i
 
         # find article closest to center
-        closest_article_in_cluster = articles_in_cluster[distances.index(min(distances))]    
-
-        # find spread at half and full
-        distances.sort()
-        half = int(len(distances)/2)
-        spread_at_half = sum(distances[:half])/half
-        spread_at_full = sum(distances)/len(distances)
+        if len(distances) > 0:
+            closest_article_in_cluster = articles_in_cluster[distances.index(min(distances))]
+        else:
+            closest_article_in_cluster = None
 
         # create the cluster object
-        cluster_obj_list.append(ClusterObj(i, cluster_mean, spread_at_half, spread_at_full, closest_article_in_cluster, articles_in_cluster)) 
+        cluster_obj_list.append(ClusterObj(i, cluster_mean, closest_article_in_cluster, articles_in_cluster, NE))
 
     return cluster_obj_list
-    
 
+
+def get_cluster_metrics(cluster_objects):
+
+    """ Given a list of cluster objects, extracts metrics
+    """
+
+    for cluster in cluster_objects:
+
+        # first metric: average distance from center
+        #center = cluster.center
+        center = cluster.closest_article.tfidf_vector
+        avg_distance_from_center = sum([scipy_cos_dist(article.tfidf_vector, center) for article in cluster.article_list]) / len(cluster.article_list)
+        cluster.metrics['avg_distance_from_center'] = avg_distance_from_center
+
+        # second metric: average number of named entities per title in cluster
+        #avg_num_ne = sum([article.num_ne for article in cluster.article_list]) / len(cluster.article_list)
+        cluster.metrics['avg_named_entities'] = len(cluster.NE_list)
+
+        # third metric: number of articles in cluster
+        cluster.metrics['num_articles'] = len(cluster.article_list)
+
+        # fourth metric: average publishing time of articles in cluster
+        cluster_timestamps = [int(datetime.strptime(article.updated_at, '%Y-%m-%d %H:%M:%S').strftime('%s')) for article in cluster.article_list]
+        avg_pub_time = sum(cluster_timestamps)/len(cluster_timestamps)
+        cluster.metrics['average_publishing_time'] = avg_pub_time
+
+        # fifth metric: publishing time of newest article in cluster
+        newest_pub_time = max(cluster_timestamps)
+        cluster.metrics['newest_publishing_time'] = newest_pub_time
+
+        # sixth metric: publishing time of oldest article in cluster
+        oldest_pub_time = min(cluster_timestamps)
+        cluster.metrics['oldest_publishing_time'] = oldest_pub_time
+
+
+def remove_duplicate_clusters(clusters, closeness_threshold = 0.75):
+
+    # indices of clusters to be kept for sure and ignored for sure
+    ignored_list = []
+    keep_list = []
+
+    # compute distance between clusters
+    vectors = [cluster.closest_article.tfidf_vector for cluster in clusters]
+    distance = spatial.distance.pdist(vectors, 'cosine')
+
+    # sort according to distance, closest first
+    sorted_distances = sorted(distance)
+    sorted_order = [i[0] for i in sorted(enumerate(distance), key=lambda x:x[1])]
+
+    indices = list(itertools.combinations(range(len(vectors)),2))
+
+    # time to compare and keep/ignore what's to be kept/ignored
+    for index, item in enumerate(sorted_order):
+
+        i = indices[item][0]
+        j = indices[item][1]
+
+        if sorted_distances[index] <= closeness_threshold:
+
+            # time to remove one of the clusters
+            # keep the one that would be ranked higher
+            if i < j:
+                to_keep = i
+                to_ignore = j
+            else:
+                to_keep = j
+                to_ignore = i
+
+            ignored_list.append(to_ignore)
+
+            if to_keep not in ignored_list: # keep only if not previously ignored when compared to even higher ranked cluster
+                keep_list.append(to_keep)
+
+            #else:
+            #    print "Previously ignored:: ", clusters[to_keep].closest_article.title
+            #print sorted_distances[index]
+            #print clusters[to_keep].closest_article.title
+            #print "Ignoring:: ", clusters[to_ignore].closest_article.title
+            #print "\n\n"
+
+        else:
+            break
+
+    # remove stuff that might have been ignored but was in keep_list (for cyclic cases?)
+    # this might be useless
+    ignored_list = [index for index in ignored_list if index not in keep_list]
+
+    # return stuff that won
+    output_clusters = [clusters[index] for index in range(len(clusters)) if index not in ignored_list]
+
+    return output_clusters
+
+
+def find_robust_clusters(result):
+
+    clusters = {}
+    clusters['nmf'] = result['nmf']['clusters']
+    clusters['gaac'] = result['gaac']['clusters']
+
+    # nmf across height, gaac across width
+    h = len(clusters['nmf'])
+    w = len(clusters['gaac'])
+
+    print h, w
+
+    # time to compare each pair of clusters
+    difference_list = [] # (i, j, {(in i, not in j) + (in j, not in i)} / (m+n))
+
+    indices = list(itertools.combinations(range(max(h, w)),2))
+    for index in indices:
+        if index[0] < h: # take only the valid ones
+
+            i = index[0]
+            j = index[1]
+
+            in_i = clusters['nmf'][i].article_list
+            in_j = clusters['gaac'][j].article_list
+
+            in_i_not_j = sum([1 for item in in_i if item not in in_j])
+            in_j_not_i = sum([1 for item in in_j if item not in in_i])
+
+            set_diff_value = (in_i_not_j + in_j_not_i) / (len(in_i) + len(in_j))
+
+            difference_list.append((i, j, set_diff_value))
+
+    sorted_diff = sorted(difference_list, key=lambda x:x[2])
+
+    for i in range(0, 10):
+        print sorted_diff[i][2]
+
+        for item in clusters['nmf'][sorted_diff[i][0]].article_list:
+            print item.title
+
+        print "-------"
+
+        for item in clusters['gaac'][sorted_diff[i][1]].article_list:
+            print item.title
+
+        print "\n\n"
+
+@metrics.track
 def cluster(articles, params):
-   
+
     # parse the parameters
     num_clusters = params.num_clusters
-    method = params.clustering_method
+    clustering_method = params.clustering_method
+    only_titles = params.only_titles
 
     # convert articles to tf-idf vectors
-    IDF, unique_tokens_dict, unique_tokens, vectors = vectorer.vectorize_articles(articles)
+    IDF, unique_tokens_dict, unique_tokens, vectors = vectorer.vectorize_articles(articles, only_titles)
 
-    # reduce dimension of vectors
-    #reduced_dim = 100
-    #truncated_vectors = vectorer.truncated_SVD_vector(full_vectors, reduced_dim)
+    # cluster the articles to get assignment
+    assignment = cluster_articles(vectors, num_clusters, clustering_method)
 
-    #assignment = cluster_articles(vectors, num_clusters, 'gaac')
-    #print assignment
-    #print_cluster_means(cluster_means, unique_tokens)
+    # create cluster objects from assignment
+    cluster_objects = get_cluster_objects(articles, assignment)
 
-    #assignment = cluster_articles(vectors, num_clusters, 'kmeans')
-    #print assignment
-    #print_cluster_means(cluster_means, unique_tokens)
+    # derive metrics from cluster objects
+    get_cluster_metrics(cluster_objects)
 
-    assignment = cluster_articles(vectors, num_clusters, method)
-    #print assignment
+    # rank the cluster objects based on metrics
+    cluster_objects = ranker.rank_clusters(cluster_objects)
 
-    # get cluster objects
-    clusters = get_cluster_objects(articles, assignment)
+    # remove duplicate clusters
+    cluster_objects = remove_duplicate_clusters(cluster_objects)
 
-    return {'clusters': clusters, 'assignment': assignment}
+    return {'clusters': cluster_objects, 'assignment': assignment}
+
+    # find robust clusters, supported by both clustering methods
+    #result['combined'] = clusterer.find_robust_clusters(result)

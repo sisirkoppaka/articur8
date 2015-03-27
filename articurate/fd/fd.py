@@ -20,14 +20,20 @@ import requests
 from urlparse import urlparse,urlunparse
 from readability.readability import Document
 
-from articulate.utils.config import *
+from articurate.metrics import metrics
+from articurate.pymotherlode.api import *
+
+from articurate.utils.config import *
+
+from celery_tasks import *
+
 
 AWS_ACCESS_KEY_ID = "NOTHING"
 AWS_SECRET_ACCESS_KEY = "NOTHING"
 SERVER_URL = "http://localhost:9999/"
 
 
-class RSSObj: # object to store the rss feeds
+class RSSObj(object): # object to store the rss feeds
     def __init__(self, title, xmlUrl, htmlUrl = None):
         
         self.title = title
@@ -35,7 +41,7 @@ class RSSObj: # object to store the rss feeds
         self.htmlUrl = "" if htmlUrl == None else htmlUrl
         
 
-class OutlineObj: # object which we store for each entry
+class OutlineObj(object): # object which we store for each entry
     def __init__(self, title = None, link = None, author = None):
 
         self.title = "None" if title == None else title
@@ -94,10 +100,6 @@ def clean_link_only_redirects(link):
     link = l.geturl()
     return link
 
-def storeDeltaDump(timestamp,deltadump):
-    payload = {'timestamp':timestamp,'deltadump':deltadump}
-    r = requests.post(SERVER_URL+"dumps/delta/",data=payload)
-
 def prettify(element):
     rough_string = ElementTree.tostring(element, 'utf-8')
     reparsed = minidom.parseString(rough_string)
@@ -107,16 +109,23 @@ def genStringID():
     """docstring for genStringID"""
     return (datetime.utcnow()).strftime('%Y%m%d%H%M')
 
+@metrics.track_by("tech")
 def getRSSSources():
     """Gets all the RSS sources we want to mine from
     and returns a list of rss objects"""
+
+    print os.getcwd()
 
     rss_sources = []
 
     # add required sources
 
     # add techmeme sources
-    techmeme_sources = opml.parse('http://www.techmeme.com/lb.opml')
+    #techmeme_sources = opml.parse('http://www.techmeme.com/lb.opml')
+    
+    # load from the list on file
+    techmeme_sources = opml.parse('articurate/sources/feed_lists/tech_feed_list.opml')
+
     for item in techmeme_sources:
         try:
             if hasattr(item, 'htmlUrl'):
@@ -126,7 +135,8 @@ def getRSSSources():
         except:
             pass
 
-    return rss_sources
+
+    return {'rss': rss_sources}
 
 def getEntryContent(entry): # gets whatever field information is present in entry
 
@@ -161,19 +171,25 @@ def getEntryContent(entry): # gets whatever field information is present in entr
     
     return outline
 
-def genSnapshot(endTime):
-    """dumps articles found in [currentTime-endTime:currentTime] minutes"""
+def genSnapshot(interval):
+    """dumps articles found in [currentTime-interval:currentTime] minutes"""
 
-    stringID = genStringID() # generates a unique ID based on time
+    stringID     = genStringID() # generates a unique ID based on time
     generated_on = datetime.utcnow()
 
     # set up python logger  
     logger = logging.getLogger("["+stringID+"]")
     logger.setLevel(logging.INFO)
 
-    # get RSS sources
-    rss_sources = getRSSSources()
-    logger.info("Num RSS sources "+str(len(rss_sources)))
+    if config['db.coldStart']: # get RSS sources from the list on file
+        rss_sources_json = getRSSSources()
+    else: # example of getting a function output by key
+        rss_sources_json = getRSSSources()
+        #rss_sources_json = getMetricByKey("articurate.fd.fd.getRSSSources", "tech")
+        
+    rss_sources = rss_sources_json['rss']
+
+    logger.info("Num RSS sources " + str(len(rss_sources)))
     print "Num RSS sources = ", len(rss_sources)
 
     # create an xml tree
@@ -184,7 +200,7 @@ def genSnapshot(endTime):
     head = SubElement(root, 'head')
 
     title = SubElement(head, 'title')
-    title.text = 'grep last '+str(endTime)+' minutes '+stringID
+    title.text = 'grep last ' + str(interval) + ' minutes ' + stringID
     
     dc = SubElement(head, 'dateCreated')
     dc.text = str(generated_on)
@@ -194,7 +210,7 @@ def genSnapshot(endTime):
     
     body = SubElement(root, 'body')
 
-    logger.info("Starting "+str(generated_on))
+    logger.info("Starting " + str(generated_on))
 
     num_added = 0
 
@@ -205,7 +221,7 @@ def genSnapshot(endTime):
             try:               
                 logger.info("Parsed "+d.feed.title)                  
                 for entry in d.entries:
-                    if (datetime(*entry.updated_parsed[:6]) > (generated_on-timedelta(minutes = endTime))) and (datetime(*entry.updated_parsed[:6]) < (generated_on)):
+                    if (datetime(*entry.updated_parsed[:6]) > (generated_on-timedelta(minutes = interval))) and (datetime(*entry.updated_parsed[:6]) < (generated_on)):
                         # entry lies in required range
                         logger.info("Found "+entry.title+" at "+d.feed.title)
 
@@ -254,17 +270,30 @@ def genSnapshot(endTime):
     #fout = open('../feeddumps/'+stringID+".opml",'w')
     #fout.write((prettify(root)).encode('utf-8'))
     #fout.close()
-    storeDeltaDump(stringID,(prettify(root)).encode('utf-8'))
-
     #putCloud("river",stringID+".opml")
     #os.remove(stringID+".opml")
 
+
+    # output dig to redis server
+    storeDeltaDump(stringID,(prettify(root)).encode('utf-8'))
+
+    # update dump key cache with latest entry
+    updateDumpKeyCache(stringID)
+
+
     logger.info("Ended "+str(datetime.utcnow()))
 
-if __name__ == "__main__":
+def startFD(interval):
     LOG_FILENAME_INFO = 'feeddigger_info.log'
     logging.basicConfig(filename=LOG_FILENAME_INFO, level=logging.INFO)
+    
+    # below gets stuff in time range of (currentTime) minutes to (currentTime - interval) minutes
+    #genSnapshot(interval)
 
-    endTime = config['fd.windowSize'] # below gets stuff in time range of (currenTime) minutes to (currentTime - endTime) minutes
+    run_fd.delay(interval)
 
-    genSnapshot(endTime)
+if __name__ == "__main__":
+    #startFD()
+    print "Deprecated: Please use 'fab runFD' to run FeedDigger."
+    run_fd.delay()
+

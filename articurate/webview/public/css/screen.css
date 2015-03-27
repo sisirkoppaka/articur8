@@ -1,0 +1,32 @@
+.circle {
+    width: 10px;
+    height: 10px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    margin-right: 11px;
+    padding: 0;
+    border:1px solid;
+}
+
+a:link {color: black;}      /* unvisited link */
+a:visited {color: black;}   /* visited link */
+a:hover {color: black;}     /* mouse over link */
+a:active {color: black;}    /* selected link */
+
+.table-view-cell[read="false"]{
+
+  background: -webkit-linear-gradient(left, #B5FF94, #F6FFF2); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #B5FF94, #F6FFF2); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(left, #B5FF94, #F6FFF2); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #B5FF94, #F6FFF2); /* Standard syntax */
+}
+
+.table-view-cell[read="true"]{
+
+  background: -webkit-linear-gradient(left, #FF9780, #FFF5F2); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #FF9780, #FFF5F2); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(left, #FF9780, #FFF5F2); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #FF9780, #FFF5F2); /* Standard syntax */
+
+}

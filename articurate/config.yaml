@@ -1,2 +1,11 @@
-fd.windowSize: 120 #Minutes back into the past that feeds should be dug
+dump.keyCacheSize: 144 # Store keys of last 72 dumps (half day) at 10 mins per dump
+
+fd.windowSize: 10 # Minutes back into the past that feeds should be dug on a normal run
+fd.coldStartWindowSize: 640 # Minutes back into past that feeds should be dug on a cold start
+
 clusterFormats.insertContent: TRUE # Should full content be inserted in the JSON of the Cluster?
+
+db.coldStart: FALSE #If TRUE, uses original fallbacks instead of DB where ever possible. Turn this off once you want to switch to DB completely.
+db.coldStartNumClusters: 1 #We may not have enough articles to cluster (numArticles < numClusters for clustering algo)
+db.numClusters: 100 #Number of clusters for clustering algo
+nertag.content: TRUE #If TRUE, runs nertagger on content, else only on titles

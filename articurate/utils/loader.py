@@ -5,33 +5,11 @@ import urllib2
 from urlparse import urlparse,urlunparse
 #from ..pymotherlode import motherlode
 #from .. import pymotherlode
-from articulate.pymotherlode.api import *
+from articurate.pymotherlode.api import *
 
 #from urlparse import urlparse, urlunparse
-
-class NewsItem: # class for each news item
-
-    identifier = 0 # static id for each news item
-    
-    def __init__(self, title, feed_title, link, author, content, updated_at):
-        
-        # details from the internet
-        self.title = title
-        self.feed_title = feed_title
-        self.link = link
-        self.author = author
-        self.content = content
-        self.updated_at = updated_at
-
-        # our representation
-        self.tfidf_vector = []
-
-        self.id = self.identifier
-        self.identifier = self.identifier + 1
-
-        self.cluster_id = -1 # cluster id to which this item belongs
-        self.distance_from_center = 0 # distance from cluster center
-    
+from articurate.utils.class_definitions import NewsItem     
+ 
     
 def clean_link(link):
     #Clean link
@@ -78,21 +56,72 @@ def get_items(dom):
         except:
             pass
 
-    print "Finished loading ", len(items), " articles\n"
-
     return items
 		
+
+def deduplicate(articles):
+
+    selected_articles = []
+
+    for i in range(0, len(articles)):
+        ignore = False
+        for j in range(0, len(articles)):
+            if i != j and articles[i].title == articles[j].title and articles[i].feed_title == articles[j].feed_title and articles[i].updated_at <= articles[j].updated_at:
+                ignore = True
+                break
+        if not ignore:
+            selected_articles.append(articles[i])
+
+    return selected_articles
+
 		
+def get_all_dumps():
+
+    xml_content_list = getAllDumps() 
+
+    items = get_items_from_xml_list(xml_content_list)
+
+    return items
+
+
 def get_latest_dump():
 
     xml_content = getLatestDeltaDump() # get from redis
+    
+    items = get_items_from_xml_list([xml_content])
 
-    dom = parseString(xml_content) # parse xml string
-
-    items = get_items(dom)
-            
     return items	
-		
+	
+
+def collect_last_dumps():
+
+    xml_content_list = getAllCacheDumps() 
+    
+    items = get_items_from_xml_list(xml_content_list)
+
+    return items
+
+
+def get_items_from_xml_list(xml_content_list):
+
+    items = []
+
+    for xml_content in xml_content_list:
+        try:
+            dom = parseString(xml_content)
+            items.extend(get_items(dom))
+        except:
+            pass
+
+    print "\nFinished loading ", len(items), " articles\n"
+
+    items = deduplicate(items)
+
+    print "\nAfter deduplication ", len(items), " articles\n"
+
+    return items
+
+
 def load_xml_data(file_name): # loads the opml file
 
     dom = parse(file_name) # parse an XML file by name

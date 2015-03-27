@@ -4,5 +4,8 @@ feeddigger_info.log
 feeddumps/*
 node_modules
 dump.rdb
+dump-*.rdb
 *.swp
 motherlode.log
+celery.log
+*.log
